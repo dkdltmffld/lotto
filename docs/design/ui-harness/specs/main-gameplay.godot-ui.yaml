@@ -1,0 +1,241 @@
+version: "1.0"
+game: lotto-idle-rpg
+surface: MainGameplay
+status: pilot_runtime_wired
+runtime: godot
+source_concepts:
+  - id: lotto_main_hud_scratch_concept_a
+    note: ../concepts/lotto_main_hud_scratch_concept_a.md
+    image: ../concepts/lotto_main_hud_scratch_concept_a.png
+design_sources:
+  - ../art-direction.yaml
+  - ../layout-tokens.yaml
+  - ../component-blueprints.yaml
+  - ../component-skins.yaml
+  - ../asset-plan.yaml
+
+target_workflow:
+  summary: "Active idle combat screen where the player watches combat, scratches lottery cards, opens bottom-nav panels, and checks top HUD rewards."
+  primary_user_actions:
+    - scratch_card_drag
+    - open_upgrade_panel
+    - open_equipment_or_shop_panel
+    - check_currency_and_stage
+    - claim_mail_or_daily_quest
+
+screen_contract:
+  reference_size_px: { width: 360, height: 780 }
+  orientation: portrait_9_19_5
+  stretch_mode: canvas_items
+  stretch_aspect: keep
+  safe_area_px:
+    top_reserved: 60
+    bottom_reserved: 40
+  implementation_scope: pilot_existing_layout
+  scope_notes:
+    - "Do not rebuild the full main screen from the concept image."
+    - "Pilot pass keeps current NAV_TOP_Y=490 and NavDock.HEIGHT=58 ownership."
+    - "Use the concept as styling/asset direction while preserving current scratch hit testing and panel band ownership."
+
+semantic_sections:
+  top_hud:
+    blueprint: TopHudFrame
+    existing_owner: "game.gd::_build_top_bar"
+    current_nodes:
+      - "$TopHUD"
+      - "$TopHUD/SettingsButton"
+      - runtime-created mail button
+      - runtime-created quest button
+    current_layout:
+      y_range_px: [6, 52]
+      resource_chips:
+        gold: { x: 102, y: 14, w: 78, h: 26 }
+        dia: { x: 184, y: 14, w: 80, h: 26 }
+      buttons:
+        mail: { x_right: [-84, -46], y: [10, 48] }
+        settings: { x_right: [-44, -6], y: [10, 48] }
+        quest: { x_right: [-46, -6], y: [56, 96] }
+    godot_node_plan:
+      container: "Control $TopHUD"
+      background: "Panel with UISkin.top_bar()"
+      labels: "Native Label nodes for account/gold/dia"
+      icons: "TextureRect children or Button icons, not baked into background"
+      mouse_filter: "Buttons STOP/default, background IGNORE"
+    pilot_changes:
+      - "Optionally introduce ResourceChip helper later; keep current manual positions for first build."
+      - "Use asset-plan icon policy for any replacement mail/settings/quest/resource icons."
+      - "Keep quest button transparent unless a later selected concept explicitly adds a skin."
+    blockers:
+      - "Resource values baked into generated bitmap."
+      - "Mail/settings/quest overlap the dia chip at 360px width."
+
+  combat_lane:
+    blueprint: "StageBanner + CombatActorLayer + DamageFeedback"
+    existing_owner: "game.gd, scenes/main.tscn actor nodes"
+    current_related_functions:
+      - "game.gd::_build_stage_banner"
+      - "game.gd::_build_masked_bar"
+    godot_node_plan:
+      stage_banner: "Panel/Control using UISkin.header(), native labels, masked progress bar"
+      actors: "Existing Player/Enemy scene nodes remain outside generated UI skins"
+      feedback: "Existing Effects/floaters remain native runtime objects"
+    pilot_changes:
+      - "Do not add side shortcut stacks from the concept in pilot; they would crowd combat at 360px."
+      - "Keep combat lane readable before adding decorative frames."
+    blockers:
+      - "Combat actor silhouettes hidden by HUD cards."
+      - "Stage/progress UI grows into scratch input area."
+
+  progression_strip:
+    blueprint: "StatSummaryChip + UpgradeCtaButton"
+    existing_owner: "Current HUD/nav/panel code, partly implicit"
+    godot_node_plan:
+      stat_chips: "Native labels plus existing icon assets or generated resource_bonus icons."
+      upgrade_cta: "Button skinned with UISkin.skin_button(buy), native label."
+    pilot_changes:
+      - "Treat this as optional; current game already exposes upgrade through NavDock."
+      - "If added, place above NAV_TOP_Y without reducing ScratchGrid below 220px usable size."
+    blockers:
+      - "Duplicate upgrade CTA conflicts with existing bottom nav upgrade tab."
+
+  scratch_panel:
+    blueprint: "ScratchPanelFrame + ScratchGrid + BonusInfoCard + AutoScratchToggle"
+    existing_owner: "game.gd::_build_scratch_bg and scratch_card.gd"
+    current_layout:
+      background_top_expr: "NAV_TOP_Y + NavDock.HEIGHT - 26"
+      background_top_px: 522
+      panel_bottom_px: 780
+      scratch_grid_current_target: "ScratchCard.configure(260x240), see game.gd layout hooks"
+    godot_node_plan:
+      background: "Panel using UISkin.scratch_bg() behind ticket_bg and scratch_card"
+      scratch_grid: "Existing scratch_card.tscn/script owns hit testing and reveal logic"
+      foil_effect: "Optional generated TextureRect/Shader overlay from ui.effect.scratch_foil_highlight_v1; must not alter hit testing"
+      bonus_card: "Optional Panel/Control using existing panel/button skins, native labels"
+      auto_toggle: "Existing auto scratch state may be represented with Button skinned by UISkin.skin_button(buy)"
+    pilot_changes:
+      - "Keep current scratch grid position/size in first build."
+      - "Improve styling only through scratch_bg, optional foil texture, and icon/label composition."
+      - "Do not copy the concept's dense right-side bonus card until touch area is revalidated."
+    blockers:
+      - "Scratch cell hit boxes change without live input verification."
+      - "Generated foil overlay hides revealed symbols or survives new_card reset."
+
+  bottom_nav:
+    blueprint: "NavDockFrame + NavTabButton + RedDotBadge"
+    existing_owner: "nav_dock.gd and game.gd::_build_nav_dock"
+    current_layout:
+      nav_top_y: 490
+      height: 58
+      tabs: [upgrade, equip, relic, dungeon, shop]
+    godot_node_plan:
+      container: "NavDock Control anchored by game.gd to y=490..548"
+      background: "Panel using UISkin.nav_bg()"
+      buttons: "HBoxContainer Buttons using UISkin.skin_button(nav)"
+      icons: "Future TextureRect/Button icons from ui.icon.nav_set_v1, labels remain native"
+      red_dots: "Use existing red_dot.gd pattern where tabs gain claimable states"
+    pilot_changes:
+      - "Add icon slots only after nav icon asset generation."
+      - "Keep tab text for now; icon+text can be introduced in build pass if assets exist."
+      - "Do not move nav to the very bottom; current project uses nav as divider between combat and scratch band."
+    blockers:
+      - "Bottom nav consumes scratch panel height."
+      - "Tab state changes resize buttons."
+
+asset_mapping:
+  reuse:
+    ui.skin.top_hud_frame:
+      path: "res://assets/ui/UI_sheet.png"
+      helper: "UISkin.top_bar()"
+      godot_type: StyleBoxTexture
+      patch_margins_px: { left: 24, right: 24, top: 24, bottom: 24 }
+      content_insets_px: { left: 8, right: 8, top: 8, bottom: 6 }
+    ui.skin.scratch_panel_frame:
+      path: "res://assets/ui/UI_sheet.png"
+      helper: "UISkin.scratch_bg()"
+      godot_type: StyleBoxTexture
+      patch_margins_px: { left: 28, right: 28, top: 28, bottom: 28 }
+      content_insets_px: { left: 10, right: 10, top: 10, bottom: 10 }
+    ui.skin.nav_dock_frame:
+      path: "res://assets/ui/UI_sheet.png"
+      helper: "UISkin.nav_bg()"
+      godot_type: StyleBoxTexture
+      patch_margins_px: { left: 20, right: 20, top: 20, bottom: 20 }
+    ui.skin.green_cta_button:
+      path: "res://assets/ui/UI_sheet.png"
+      helper: "UISkin.skin_button(kind='buy')"
+      godot_type: StyleBoxTexture
+  generated:
+    ui.icon.nav_set_v1:
+      target_path: "res://assets/ui/generated/nav_icons_v1.png"
+      consumer: "NavDock.NavTabButton icons"
+      implementation: "scripts/nav_dock.gd slices the generated sheet into five AtlasTexture tab icons."
+    ui.icon.resource_bonus_set_v1:
+      target_path: "res://assets/ui/generated/resource_bonus_icons_v1.png"
+      consumer: "ResourceChip and BonusInfoCard icons"
+      implementation: "Generated and imported; not wired in the pilot runtime pass."
+    ui.effect.scratch_foil_highlight_v1:
+      target_path: "res://assets/ui/generated/scratch_foil_highlight_v1.png"
+      consumer: "ScratchGrid optional visual overlay"
+      implementation: "Generated candidate; not wired because edge fringe needs visual review."
+
+text_and_data_binding_policy:
+  native_text_only:
+    - account_name
+    - gold_value
+    - dia_value
+    - stage_number
+    - hp_values
+    - upgrade_costs
+    - scratch_numbers
+    - quest_or_mail_counts
+  formatting_sources:
+    currency: "UISkin.fmt_currency"
+    labels: "Bundled Korean font via project theme"
+  forbidden:
+    - "Baking live values into generated panel skins."
+    - "Using concept pseudo text as final localized copy."
+
+implementation_plan_for_build_step:
+  phase_1_safe_pilot:
+    goal: "Wire no new generated assets; document/optionally refactor UI helper boundaries while preserving layout."
+    likely_files:
+      - scripts/ui_skin.gd
+      - scripts/nav_dock.gd
+      - scripts/game.gd
+    possible_changes:
+      - "Add comments or helper names matching blueprint components if useful."
+      - "Prepare NavDock button anatomy for future icon+label without changing current visual result."
+      - "Keep scratch_card hit testing untouched."
+  phase_2_assets:
+    goal: "Run /gen-ui-assets for nav/resource/foil assets and wire them into existing components."
+    status: partial_done
+    likely_files:
+      - assets/ui/generated/*
+      - scripts/nav_dock.gd
+      - scripts/game.gd
+    completed:
+      - "Generated/imported nav/resource/foil PNG assets."
+      - "Wired nav icon sheet into NavDock buttons only."
+    deferred:
+      - "Resource chip icons."
+      - "Scratch foil overlay."
+  phase_3_visual_iteration:
+    goal: "Screenshot current runtime, compare top_hud/scratch_panel/nav sections against concept, then tune one section at a time."
+    likely_outputs:
+      - "docs/design/ui-harness/compare/*.png"
+
+verification:
+  static:
+    - command: "python -c \"import pathlib, yaml; yaml.safe_load(pathlib.Path('docs/design/ui-harness/specs/main-gameplay.godot-ui.yaml').read_text(encoding='utf-8')); print('spec yaml ok')\""
+      expected: "spec yaml ok"
+  godot_compile:
+    command_hint: "& \"C:/Users/jaeyeop.im.SUPERCAT/Downloads/Godot_v4.6.3-stable_win64.exe/Godot_v4.6.3-stable_win64_console.exe\" --headless --path \"E:/projects/새-게임-프로젝트\" --script res://tools/tests/run_tests.gd"
+    note: "Only needed after implementation changes; may require sandbox escalation because Godot writes user://logs."
+  visual:
+    - "Use Godot MCP/editor screenshot or local web build after implementation."
+    - "Check text fit, scratch drag area, combat visibility, and missing texture warnings."
+
+open_questions:
+  - "Should the concept's dense side reward shortcuts be ignored, or reintroduced later as optional event/mission buttons?"
+  - "Should NavDock remain at y=490 as current design divider, or eventually move to true bottom like the concept?"
+  - "Should scratch bonus info become a permanent card, or stay inside existing panel/tooltip flows?"

@@ -1,0 +1,119 @@
+# 장비 (무기/방어구) 데이터 — 더미 카탈로그. 기획: docs/design/장비 시스템 정리본.md
+# 변환: tools/build_data.gd → data/equipment.json → GameData.table("equipment") → scripts/gacha.gd(Gacha).
+# ⚠️ 파서: 블록리스트(- item)·인라인맵({}) 미지원 → 전부 블록 맵(id: 다음 줄 들여쓰기). 인라인 리스트 [a,b]만 지원.
+
+# 등급(전 종류 공용): weight=가챠 가중치, base=장착 시 스탯 곱 보너스(강화 0레벨). 잠정 수치.
+grade_order: [common, rare, epic, legendary, mythic]
+grades:
+  common:
+    weight: 60
+    base: 0.10
+  rare:
+    weight: 28
+    base: 0.30
+  epic:
+    weight: 9
+    base: 0.80
+  legendary:
+    weight: 2.5
+    base: 2.0
+  mythic:
+    weight: 0.5
+    base: 5.0
+
+# 강화: 보너스 = base × (1 + per_lv × level). 비용 = base_cost × grade_mult^등급index × growth^level. 잠정.
+enhance:
+  per_lv: 0.10
+  max_lv: 20
+  base_cost: 100
+  growth: 1.5
+  grade_mult: 4
+
+combine_n: 4   # 같은 종류·등급 N개 → 상위 1개
+
+# 신화(최상위) 돌파/별: 신화는 합성으로 올릴 등급이 없으므로 중복 신화를 흡수해 '별'을 올린다.
+#   장착 보너스 = base × (1 + per_lv×강화레벨) × (1 + bonus_per×별).  cap=0 이면 무제한. 잠정 더미.
+star:
+  bonus_per: 0.20   # 별 1개당 추가 배율(신화 보너스에 곱). 잠정.
+  cap: 0            # 별 상한(0=무제한 — 엔드게임 천장). 잠정.
+
+# 소환 풀 표시 순서 (상점 소환 리스트)
+pool_order: [weapon, armor]
+
+pools:
+  # 무기 — 공격력 곱
+  weapon:
+    name: "무기 소환"
+    effect: "공격력"
+    stat: attack
+    cost_dia: 100
+    cost_dia_11: 1000
+    catalog:
+      wp_common_01:
+        name: "녹슨 검"
+        grade: common
+      wp_common_02:
+        name: "낡은 단검"
+        grade: common
+      wp_rare_01:
+        name: "강철 장검"
+        grade: rare
+      wp_rare_02:
+        name: "은빛 레이피어"
+        grade: rare
+      wp_epic_01:
+        name: "기사단의 검"
+        grade: epic
+      wp_epic_02:
+        name: "룬 블레이드"
+        grade: epic
+      wp_legend_01:
+        name: "용살의 대검"
+        grade: legendary
+      wp_legend_02:
+        name: "여명의 성검"
+        grade: legendary
+      wp_mythic_01:
+        name: "종말의 검"
+        grade: mythic
+      wp_mythic_02:
+        name: "창세의 검"
+        grade: mythic
+  # 방어구 — 체력 곱
+  armor:
+    name: "방어구 소환"
+    effect: "체력"
+    stat: hp
+    cost_dia: 100
+    cost_dia_11: 1000
+    catalog:
+      ar_common_01:
+        name: "천 갑옷"
+        grade: common
+      ar_common_02:
+        name: "낡은 가죽갑옷"
+        grade: common
+      ar_rare_01:
+        name: "사슬 갑옷"
+        grade: rare
+      ar_rare_02:
+        name: "강철 흉갑"
+        grade: rare
+      ar_epic_01:
+        name: "기사단의 갑옷"
+        grade: epic
+      ar_epic_02:
+        name: "룬 아머"
+        grade: epic
+      ar_legend_01:
+        name: "용비늘 갑옷"
+        grade: legendary
+      ar_legend_02:
+        name: "여명의 성갑"
+        grade: legendary
+      ar_mythic_01:
+        name: "종말의 갑주"
+        grade: mythic
+      ar_mythic_02:
+        name: "창세의 갑주"
+        grade: mythic

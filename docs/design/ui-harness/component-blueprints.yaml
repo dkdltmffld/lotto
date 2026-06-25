@@ -1,0 +1,229 @@
+version: "1.0"
+game: lotto-idle-rpg
+status: pilot
+purpose: "Semantic component contract between selected UI concepts, generated assets, and Godot Control implementation."
+
+source_concepts:
+  primary:
+    id: lotto_main_hud_scratch_concept_a
+    note: concepts/lotto_main_hud_scratch_concept_a.md
+    image: concepts/lotto_main_hud_scratch_concept_a.png
+
+runtime_targets:
+  godot:
+    project: "E:/projects/새-게임-프로젝트"
+    reference_size_px: { width: 360, height: 780 }
+    likely_files:
+      - scripts/ui_skin.gd
+      - scripts/sheet_rects.gd
+      - scripts/nav_dock.gd
+      - scripts/game.gd
+      - scenes/main.tscn
+
+surfaces:
+  MainGameplay:
+    intent: "Default active idle gameplay screen: combat continues while scratch card and nav remain usable."
+    orientation: portrait_9_19_5
+    reference_size_px: { width: 360, height: 780 }
+    sections:
+      top_hud:
+        role: "Persistent status and currencies."
+        process_scope: section
+        components: [TopHudFrame, ResourceChip, IconButton]
+        layout_contract:
+          anchor: top
+          height_px: 76
+          content_insets_px: { left: 8, right: 8, top: 8, bottom: 6 }
+      combat_lane:
+        role: "Readable side-scrolling fight and stage feedback."
+        process_scope: section
+        components: [StageBanner, CombatActorLayer, DamageFeedback]
+        layout_contract:
+          anchor: middle
+          min_height_px: 220
+          may_overlap_with_hud: false
+      progression_strip:
+        role: "Short stat summary and primary upgrade CTA."
+        process_scope: section
+        components: [StatSummaryChip, UpgradeCtaButton]
+        layout_contract:
+          height_px: 54
+          min_touch_px: 44
+      scratch_panel:
+        role: "The lottery attack machine."
+        process_scope: section
+        components: [ScratchPanelFrame, ScratchGrid, BonusInfoCard, AutoScratchToggle]
+        layout_contract:
+          anchor: lower_middle
+          min_height_px: 260
+          content_insets_px: { left: 10, right: 10, top: 10, bottom: 10 }
+      bottom_nav:
+        role: "Persistent navigation tabs."
+        process_scope: section
+        components: [NavDockFrame, NavTabButton, RedDotBadge]
+        layout_contract:
+          anchor: bottom
+          height_px: 82
+          min_touch_px: 44
+    component_tree:
+      - TopHudFrame
+      - ResourceChip
+      - IconButton
+      - StageBanner
+      - StatSummaryChip
+      - UpgradeCtaButton
+      - ScratchPanelFrame
+      - ScratchGrid
+      - BonusInfoCard
+      - AutoScratchToggle
+      - NavDockFrame
+      - NavTabButton
+      - RedDotBadge
+
+components:
+  TopHudFrame:
+    role: "Dark wood status shell at the top of the screen."
+    mode: hybrid
+    anatomy: [background_skin, profile_slot, resource_group, menu_button]
+    box_model:
+      min_height_px: 64
+      content_insets_px: { left: 8, right: 8, top: 8, bottom: 6 }
+    skin_contract:
+      existing_helper: UISkin.top_bar
+      asset_key: ui.skin.top_hud_frame
+      godot_usage: StyleBoxTexture
+      slice_hints_px: { left: 24, right: 24, top: 24, bottom: 24 }
+  ResourceChip:
+    role: "Gold, dia, and other compact currency counters."
+    mode: hybrid
+    anatomy: [chip_skin, currency_icon, value_label, optional_plus_button]
+    box_model:
+      min_width_px: 76
+      min_height_px: 34
+      content_insets_px: { left: 8, right: 8, top: 4, bottom: 4 }
+    text_rules:
+      value: "native Label using UISkin.fmt_currency"
+  IconButton:
+    role: "Small settings, mail, quest, or menu button."
+    mode: hybrid
+    anatomy: [button_skin, generated_or_existing_icon, red_dot_slot]
+    box_model:
+      target_px: { width: 34, height: 34 }
+      min_touch_px: 44
+    skin_contract:
+      existing_helper: UISkin.skin_button(settings)
+  StageBanner:
+    role: "Stage name/progress display above combat."
+    mode: hybrid
+    anatomy: [banner_skin, title_label, progress_bar]
+    skin_contract:
+      existing_helper: UISkin.header
+      asset_key: ui.skin.stage_banner
+  StatSummaryChip:
+    role: "Attack/HP/gold short stat readout."
+    mode: hybrid
+    anatomy: [icon_slot, name_label, value_label]
+    text_rules:
+      values: "native labels, no baked numbers"
+  UpgradeCtaButton:
+    role: "Primary green upgrade/action button."
+    mode: hybrid
+    box_model:
+      min_height_px: 44
+      content_insets_px: { left: 10, right: 10, top: 6, bottom: 6 }
+    skin_contract:
+      existing_helper: UISkin.skin_button(buy)
+      asset_key: ui.skin.green_cta_button
+  ScratchPanelFrame:
+    role: "Wood frame behind scratch ticket and bonus side card."
+    mode: hybrid
+    anatomy: [frame_skin, optional_title_plate]
+    box_model:
+      content_insets_px: { left: 10, right: 10, top: 10, bottom: 10 }
+    skin_contract:
+      existing_helper: UISkin.scratch_bg
+      asset_key: ui.skin.scratch_panel_frame
+  ScratchGrid:
+    role: "3x3 scratch card interaction target."
+    mode: native_ui
+    anatomy: [grid_container, cell_background, foil_overlay, revealed_symbol]
+    box_model:
+      target_size_px: { width: 260, height: 240 }
+      cell_gap_px: 4
+    constraints:
+      - "Keep hit testing in scratch_card.gd; concept art is only a visual direction."
+  BonusInfoCard:
+    role: "Shows current bonus, streak, or jackpot info next to/under scratch grid."
+    mode: hybrid
+    anatomy: [card_skin, icon_list, progress_pips, cta_button]
+    box_model:
+      min_width_px: 90
+      content_insets_px: { left: 8, right: 8, top: 8, bottom: 8 }
+  AutoScratchToggle:
+    role: "Auto scratch state and speed affordance."
+    mode: hybrid
+    anatomy: [button_skin, state_label, small_icon]
+    state_rules:
+      - "ON/OFF state must not resize the button."
+  NavDockFrame:
+    role: "Bottom persistent navigation shell."
+    mode: hybrid
+    skin_contract:
+      existing_helper: UISkin.nav_bg
+      asset_key: ui.skin.nav_dock_frame
+  NavTabButton:
+    role: "One bottom navigation tab."
+    mode: hybrid
+    anatomy: [button_skin, icon, label, active_marker]
+    box_model:
+      min_width_px: 58
+      min_height_px: 52
+      min_touch_px: 44
+    skin_contract:
+      existing_helper: UISkin.skin_button(nav)
+      asset_key: ui.skin.nav_tab_button
+  RedDotBadge:
+    role: "Unread/claimable notification dot."
+    mode: native_ui
+    anatomy: [circle, optional_count_label]
+    constraints:
+      - "Use existing red_dot.gd behavior where possible."
+
+asset_dependency_matrix:
+  ui.skin.top_hud_frame:
+    component_slots: [TopHudFrame.background_skin]
+    existing_source: "UISkin.R_TOPBAR"
+    content_insets_by_slot:
+      TopHudFrame: { left: 8, right: 8, top: 8, bottom: 6 }
+    must_not_bake: [currency_values, player_name, stage_number]
+  ui.skin.scratch_panel_frame:
+    component_slots: [ScratchPanelFrame.frame_skin]
+    existing_source: "UISkin.R_SCRATCH_BG"
+    content_insets_by_slot:
+      ScratchPanelFrame: { left: 10, right: 10, top: 10, bottom: 10 }
+    must_not_bake: [scratch_numbers, bonus_values, labels]
+  ui.skin.nav_dock_frame:
+    component_slots: [NavDockFrame.background_skin]
+    existing_source: "UISkin.R_NAV_BG"
+  ui.skin.green_cta_button:
+    component_slots: [UpgradeCtaButton.button_skin, AutoScratchToggle.button_skin]
+    existing_source: "UISkin.R_BUY"
+
+runtime_token_mapping:
+  godot_helpers:
+    UISkin.top_bar: TopHudFrame
+    UISkin.scratch_bg: ScratchPanelFrame
+    UISkin.nav_bg: NavDockFrame
+    UISkin.skin_button.buy: UpgradeCtaButton
+    UISkin.skin_button.nav: NavTabButton
+
+review_gate:
+  pass_conditions:
+    - "Scratch grid remains large enough to drag comfortably."
+    - "Combat actor silhouettes remain visible while idle loop runs."
+    - "All live values are native Godot text."
+    - "Any generated rectangular skin separates slice hints from content insets."
+  blockers:
+    - "Concept copied as full-screen bitmap implementation."
+    - "Scratch panel becomes a generic reward slot board."
+    - "Bottom nav or panel overlaps touch-critical scratch cells."

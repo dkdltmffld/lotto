@@ -1,0 +1,26 @@
+version: "1.0"
+game: lotto-idle-rpg
+source_concepts:
+  - lotto_main_hud_scratch_concept_a
+status: draft
+
+motion_rules:
+  scratch_reveal:
+    feel: "snappy foil scratch, small shine burst on cell completion"
+    max_duration_sec: 0.18
+    constraints:
+      - "Must not delay card completion logic."
+      - "Must not hide the next card cell state after new_card()."
+  jackpot_or_high_hand:
+    feel: "short gold pulse and combat damage emphasis"
+    max_duration_sec: 0.45
+    constraints:
+      - "Avoid long blocking sequences except existing cut-in rules."
+  nav_red_dot:
+    feel: "subtle pulse only when claimable"
+    constraints:
+      - "Do not distract from scratch input."
+  cta_button:
+    feel: "green button press squash or brightness shift"
+    constraints:
+      - "State change must not resize layout."

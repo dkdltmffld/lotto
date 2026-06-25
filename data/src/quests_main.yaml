@@ -1,0 +1,200 @@
+# 메인 퀘스트 데이터 — 순차/1회성, 절대 누적 stat = 소급 완료. 1차 더미.
+# 변환: tools/build_data.gd → data/quests_main.json → GameData.table("quests_main") → scripts/quests.gd(Quests).
+# (일일 퀘스트는 quests_daily.yaml 로 분리 — 시트 분리.)
+# ⚠️ 파서: 블록맵만(인라인맵 {} X), 인라인 리스트 [a, b]만. relics/equipment.yaml 과 동일 규칙.
+#
+# rewards 는 dict 리스트({currency,amount})를 파서가 못 다뤄 **통화키 맵**으로 저장한다
+#   (예: rewards: { dia: 50, dust: 100 } → quests.gd 가 [{currency,amount}] 로 복원).
+# 허용 통화 = gold/dia/dust(우편함과 동일 경계). 기본 보상 = 다이아(기획 §6).
+# stat = 행동량 누적(운 기반 제외, 기획 §2-2). target/보상 전부 잠정(밸런스 단계 조정).
+#
+# ⚠️ 순서 = 트래커 노출 순서(파일 위→아래, sort_keys=false 보존). 메인은 순차 1개씩 노출.
+#    배치(2026-06-15): ① 빠른 비게이트 퀘(받고 ~30초-1분) → ② 소환 → ③ 스테이지 도달 → ④ 보스(맨 뒤).
+#    ③④는 진행도 게이트(스테이지 도달·보스=스테이지 10/20…)라, 순차상 늦게 뜰 땐 이미 달성(소급)돼 있을 수 있음.
+
+quests:
+  # --- ① 빠른 퀘 (비게이트, 앞쪽) ---
+  main_kill_3:
+    title: "첫 사냥"
+    desc: "적 3마리 처치"
+    stat: total_kills
+    target: 3
+    rewards:
+      dia: 50
+  main_upgrade_3:
+    title: "더 강하게"
+    desc: "강화 3회"
+    stat: upgrades_bought
+    target: 3
+    rewards:
+      dia: 50
+  main_kill_20:
+    title: "사냥 계속"
+    desc: "적 20마리 처치"
+    stat: total_kills
+    target: 20
+    rewards:
+      dia: 100
+  main_upgrade_8:
+    title: "성장의 길"
+    desc: "강화 8회"
+    stat: upgrades_bought
+    target: 8
+    rewards:
+      dia: 100
+  # 트랙별 강화 (stat = upgrades_bought_<track>, §4-1 A). 자동긁기속도/긁기범위/저장소 제외.
+  main_upgrade_attack_3:
+    title: "공격 특화"
+    desc: "공격력 강화 3회"
+    stat: upgrades_bought_attack
+    target: 3
+    rewards:
+      dia: 50
+  main_upgrade_hp_3:
+    title: "튼튼하게"
+    desc: "체력 강화 3회"
+    stat: upgrades_bought_hp
+    target: 3
+    rewards:
+      dia: 50
+  main_upgrade_hp_regen_2:
+    title: "꾸준한 회복"
+    desc: "체력 재생 강화 2회"
+    stat: upgrades_bought_hp_regen
+    target: 2
+    rewards:
+      dia: 50
+  main_upgrade_card_mult_3:
+    title: "대박의 예감"
+    desc: "복권 배율 강화 3회"
+    stat: upgrades_bought_card_mult
+    target: 3
+    rewards:
+      dia: 50
+  # 트랙별 "N단계 도달" (stat = level_<track>, 현재 레벨 — §4-1 B). A(횟수)보다 약간 높은 단계.
+  main_attack_lv_5:
+    title: "공격의 경지"
+    desc: "공격력 5단계 달성"
+    stat: level_attack
+    target: 5
+    rewards:
+      dia: 100
+  main_hp_lv_5:
+    title: "불굴의 체력"
+    desc: "체력 5단계 달성"
+    stat: level_hp
+    target: 5
+    rewards:
+      dia: 100
+  main_hp_regen_lv_3:
+    title: "끝없는 회복"
+    desc: "체력 재생 3단계 달성"
+    stat: level_hp_regen
+    target: 3
+    rewards:
+      dia: 100
+  main_card_mult_lv_5:
+    title: "행운의 정점"
+    desc: "복권 배율 5단계 달성"
+    stat: level_card_mult
+    target: 5
+    rewards:
+      dia: 100
+  # --- ② 소환 (다이아/가루 — 메일·퀘 보상으로 충당) ---
+  main_equip_pull_1:
+    title: "장비 소환"
+    desc: "장비 소환 1회"
+    stat: equipment_pulls
+    target: 1
+    rewards:
+      dia: 50
+  # (유물 소환 메인 퀘는 보류 — 유물 미사용 계획. relic_pulls stat·소환 기능은 유지, 퀘만 제거. 재도입 시 여기 추가.)
+  # --- ③ 스테이지 도달 (stat = stage_reached, 최고 도달 스테이지·monotonic) ---
+  #     10스테이지 단위 촘촘한 사다리. 진행하며 자연히 달성(소급). 보상은 단계마다 점증(잠정).
+  main_stage_10:
+    title: "여정의 시작"
+    desc: "스테이지 5 도달"
+    stat: stage_reached
+    target: 5
+    rewards:
+      dia: 100
+  main_stage_20:
+    title: "발걸음을 내딛다"
+    desc: "스테이지 10 도달"
+    stat: stage_reached
+    target: 10
+    rewards:
+      dia: 120
+  main_stage_30:
+    title: "더 깊은 곳으로"
+    desc: "스테이지 15 도달"
+    stat: stage_reached
+    target: 15
+    rewards:
+      dia: 140
+  main_stage_40:
+    title: "익숙한 사냥터"
+    desc: "스테이지 20 도달"
+    stat: stage_reached
+    target: 20
+    rewards:
+      dia: 160
+  main_stage_50:
+    title: "절반의 정상"
+    desc: "스테이지 25 도달"
+    stat: stage_reached
+    target: 25
+    rewards:
+      dia: 180
+  main_stage_60:
+    title: "미지의 영역"
+    desc: "스테이지 30 도달"
+    stat: stage_reached
+    target: 30
+    rewards:
+      dia: 200
+  main_stage_70:
+    title: "한계를 넘어"
+    desc: "스테이지 35 도달"
+    stat: stage_reached
+    target: 35
+    rewards:
+      dia: 220
+  main_stage_80:
+    title: "깊은 어둠 속"
+    desc: "스테이지 40 도달"
+    stat: stage_reached
+    target: 40
+    rewards:
+      dia: 240
+  main_stage_90:
+    title: "끝이 보이는 길"
+    desc: "스테이지 50 도달"
+    stat: stage_reached
+    target: 50
+    rewards:
+      dia: 260
+  main_stage_100:
+    title: "백 번째 관문"
+    desc: "스테이지 60 도달"
+    stat: stage_reached
+    target: 60
+    rewards:
+      dia: 300
+  # --- ④ 보스 (스테이지 10/20… 도달 필요 — 맨 뒤) ---
+  main_boss_1:
+    title: "첫 보스"
+    desc: "보스 1회 처치"
+    stat: boss_kills
+    target: 1
+    rewards:
+      dia: 100
+      dust: 100
+  main_boss_2:
+    title: "보스 사냥꾼"
+    desc: "보스 2회 처치"
+    stat: boss_kills
+    target: 2
+    rewards:
+      dia: 150
+      dust: 150

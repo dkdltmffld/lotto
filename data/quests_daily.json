@@ -1,0 +1,74 @@
+{
+  "quests": {
+    "daily_kill_01": {
+      "title": "오늘의 사냥 1",
+      "desc": "적 100마리 처치",
+      "stat": "total_kills",
+      "target": 100,
+      "exposed": true,
+      "rewards": {
+        "dia": 20
+      }
+    },
+    "daily_kill_02": {
+      "title": "오늘의 사냥 2",
+      "desc": "적 200마리 처치",
+      "stat": "total_kills",
+      "target": 200,
+      "exposed": true,
+      "rewards": {
+        "dia": 40
+      }
+    },
+    "daily_kill_03": {
+      "title": "오늘의 사냥 3",
+      "desc": "적 300마리 처치",
+      "stat": "total_kills",
+      "target": 300,
+      "exposed": true,
+      "rewards": {
+        "dia": 60
+      }
+    },
+    "daily_upgrade": {
+      "title": "오늘의 강화",
+      "desc": "강화 10회",
+      "stat": "upgrades_bought",
+      "target": 10,
+      "exposed": true,
+      "rewards": {
+        "dia": 30
+      }
+    },
+    "daily_boss": {
+      "title": "오늘의 보스",
+      "desc": "보스 2회 처치",
+      "stat": "boss_kills",
+      "target": 2,
+      "exposed": true,
+      "rewards": {
+        "dia": 40
+      }
+    },
+    "daily_gold": {
+      "title": "오늘의 수입",
+      "desc": "골드 50,000 획득",
+      "stat": "gold_earned",
+      "target": 50000,
+      "exposed": true,
+      "rewards": {
+        "dia": 30
+      }
+    },
+    "daily_summon": {
+      "title": "오늘의 소환",
+      "desc": "장비/유물 소환 1회",
+      "stat": "summon_pulls",
+      "target": 1,
+      "exposed": false,
+      "rewards": {
+        "dia": 30
+      }
+    }
+  }
+}

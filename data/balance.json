@@ -1,0 +1,48 @@
+{
+  "stage": {
+    "block_size": 10,
+    "mobs_per_stage": 5,
+    "death_setback": 3
+  },
+  "enemy_hp": {
+    "base": 40.0,
+    "growth": 1.18,
+    "boss_mult": 12.0
+  },
+  "gold": {
+    "base": 8.0,
+    "growth": 1.14,
+    "boss_mult": 15.0,
+    "jackpot_mult": 3.0
+  },
+  "enemy_attack": {
+    "boss": {
+      "interval": 1.6,
+      "base": 6.0,
+      "growth": 1.16,
+      "windup": 0.4
+    },
+    "mob": {
+      "interval": 2.6,
+      "base": 1.0,
+      "growth": 1.12,
+      "windup": 0.35
+    }
+  },
+  "auto_attack": {
+    "coef": 1.0,
+    "speed": 3.3
+  },
+  "idle": {
+    "est_seconds_per_mob": 6.0
+  },
+  "relic_dust": {
+    "per_boss_base": 50.0,
+    "per_boss_step": 10.0
+  },
+  "dungeon": {
+    "daily_tickets": 10,
+    "repeat_gold_mult": 1.0,
+    "repeat_dust_ratio": 0.2
+  }
+}

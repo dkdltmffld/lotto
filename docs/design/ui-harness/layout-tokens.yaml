@@ -1,0 +1,56 @@
+version: "1.0"
+game: lotto-idle-rpg
+source_concepts:
+  - lotto_main_hud_scratch_concept_a
+status: draft
+
+reference_size_px: { width: 360, height: 780 }
+orientation: portrait_9_19_5
+safe_area_px:
+  top_reserved: 60
+  bottom_reserved: 40
+
+regions:
+  top_hud:
+    anchor: top
+    y: 0
+    height: 76
+    role: "Persistent currencies, stage, account/menu buttons."
+  combat_lane:
+    anchor: middle
+    y: 76
+    height: 260
+    role: "Player, enemy, stage banner, damage feedback."
+  progression_strip:
+    anchor: below_combat
+    y: 336
+    height: 54
+    role: "Attack/HP/gold short stats and primary upgrade affordance."
+  scratch_panel:
+    anchor: lower_middle
+    y: 390
+    height: 276
+    role: "3x3 scratch-card interaction, bonus info, auto state."
+  bottom_nav:
+    anchor: bottom
+    y: 666
+    height: 114
+    role: "Main navigation dock and persistent tabs."
+
+spacing_px:
+  outer_margin: 8
+  panel_padding: 8
+  card_gap: 6
+  icon_gap: 4
+  min_touch: 44
+  nav_tab_height: 52
+  scratch_cell_gap: 4
+
+responsive_policy:
+  stretch_mode: canvas_items
+  stretch_aspect: keep
+  primary_rule: "Keep all gameplay inside 360x780; tolerate letterbox outside."
+  narrow_adjustments:
+    - "Reduce side shortcut count before shrinking scratch cells."
+    - "Keep scratch 3x3 target area at or above 220x220 when possible."
+    - "Use icon-only nav when labels collide."

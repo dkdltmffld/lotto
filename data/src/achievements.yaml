@@ -1,0 +1,35 @@
+# ============================================================
+# achievements — 업적 카탈로그 (threshold 잠정, 튜닝 전)
+# 출처: 기존 scripts/achievements.gd. 게임은 변환 산출물 data/achievements.json 을 읽는다.
+#   stat 형: BackendService stat(또는 high_score) >= threshold 면 자동 해금.
+#   stat/threshold 없는 항목: 이벤트 기반(코드에서 직접 unlock).
+# 원본(여기) 수정 후 변환: godot --headless --path . --script res://tools/build_data.gd
+# ============================================================
+
+catalog:
+  first_blood:
+    name: "첫 처치"
+    desc: "첫 적을 쓰러뜨렸다"
+    stat: total_kills
+    threshold: 1
+  kill_50:
+    name: "백전노장"
+    desc: "누적 50명 처치"
+    stat: total_kills
+    threshold: 50
+  kill_200:
+    name: "전장의 지배자"
+    desc: "누적 200명 처치"
+    stat: total_kills
+    threshold: 200
+  score_1000:
+    name: "고득점"
+    desc: "한 판 1000점 달성"
+    stat: high_score
+    threshold: 1000
+  four_kind:
+    name: "포 카드"
+    desc: "같은 숫자 4개 족보 달성"
+  jackpot:
+    name: "잭팟!"
+    desc: "9칸 모두 같은 숫자 달성"

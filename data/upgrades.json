@@ -1,0 +1,78 @@
+{
+  "order": [
+    "attack",
+    "hp",
+    "hp_regen",
+    "card_mult",
+    "auto_speed",
+    "brush",
+    "storage"
+  ],
+  "tracks": {
+    "attack": {
+      "name": "공격력",
+      "kind": "char",
+      "base_cost": 10.0,
+      "cost_growth": 1.15,
+      "base_val": 5.0,
+      "per_level": 2.0,
+      "note": "캐릭터 기본 공격력(베이스). 일반 공격·스크래치 스킬 둘 다의 바닥을 올림."
+    },
+    "hp": {
+      "name": "체력",
+      "kind": "char",
+      "base_cost": 15.0,
+      "cost_growth": 1.18,
+      "base_val": 100.0,
+      "per_level": 40.0,
+      "note": "보스전 생존력."
+    },
+    "hp_regen": {
+      "name": "체력 재생",
+      "kind": "char",
+      "base_cost": 20.0,
+      "cost_growth": 1.2,
+      "base_val": 2.0,
+      "per_level": 2.0,
+      "note": "초당 HP 자동 회복량. 일반몹 피해를 메우는 생존 유지축."
+    },
+    "card_mult": {
+      "name": "복권 배율",
+      "kind": "card",
+      "base_cost": 25.0,
+      "cost_growth": 1.22,
+      "base_val": 1.0,
+      "per_level": 0.15,
+      "note": "족보배율에 곱해지는 복권 성장. 데미지 곱연산의 천장을 올림."
+    },
+    "auto_speed": {
+      "name": "자동 긁기 속도",
+      "kind": "card",
+      "base_cost": 40.0,
+      "cost_growth": 1.35,
+      "base_val": 0.6,
+      "per_level": 0.25,
+      "max_level": 12,
+      "note": "방치 DPS(분당 복권 수)."
+    },
+    "brush": {
+      "name": "긁기 범위",
+      "kind": "card",
+      "base_cost": 35.0,
+      "cost_growth": 1.28,
+      "base_val": 30.0,
+      "per_level": 5.0,
+      "max_level": 10,
+      "note": "수동 긁기 브러시 반지름."
+    },
+    "storage": {
+      "name": "저장소",
+      "kind": "util",
+      "base_cost": 30.0,
+      "cost_growth": 1.25,
+      "base_val": 1000.0,
+      "per_level": 1500.0,
+      "note": "오프라인 골드 누적 상한."
+    }
+  }
+}

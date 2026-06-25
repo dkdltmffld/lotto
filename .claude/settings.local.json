@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__godot-mcp__project",
+      "WebFetch(domain:kenney.nl)",
+      "Bash(mkdir -p \"E:/projects/새-게임-프로젝트/assets/cards\")",
+      "Bash(curl -L -o cards.zip \"https://kenney.nl/media/pages/assets/playing-cards-pack/4b345a2a5a-1677495915/kenney_playing-cards-pack.zip\")",
+      "Bash(unzip -o cards.zip -d cards_temp)",
+      "mcp__godot-mcp__editor",
+      "mcp__godot-mcp__godot_docs",
+      "PowerShell($godot = \"C:\\\\Users\\\\jaeyeop.im.SUPERCAT\\\\Downloads\\\\Godot_v4.6.3-stable_win64.exe\\\\Godot_v4.6.3-stable_win64_console.exe\"; & $godot --headless --path \"E:\\\\projects\\\\새-게임-프로젝트\" --export-release \"Web\" \"build/web/index.html\" 2>&1 | Select-Object -First 50)",
+      "Bash(\"/c/Users/jaeyeop.im.SUPERCAT/Downloads/Godot_v4.6.3-stable_win64.exe/Godot_v4.6.3-stable_win64_console.exe\" --headless --path \"E:/projects/새-게임-프로젝트\" --export-release \"Web\" \"E:/projects/새-게임-프로젝트/build/web/index.html\")",
+      "PowerShell(Join-Path *)",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $f = Get-Item 'E:\\\\projects\\\\새-게임-프로젝트\\\\assets\\\\sprites\\\\player\\\\PC_attack.png'; $img = [System.Drawing.Image]::FromFile\\($f.FullName\\); [PSCustomObject]@{ File = $f.Name; Width = $img.Width; Height = $img.Height; SizeKB = [math]::Round\\($f.Length/1KB, 1\\) } | Format-Table -AutoSize; $img.Dispose\\(\\))",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $f = Get-Item 'E:\\\\projects\\\\새-게임-프로젝트\\\\assets\\\\sprites\\\\player\\\\PC-dead.png'; $img = [System.Drawing.Image]::FromFile\\($f.FullName\\); [PSCustomObject]@{ File = $f.Name; Width = $img.Width; Height = $img.Height; Frames = [int]\\($img.Width / 256\\); SizeKB = [math]::Round\\($f.Length/1KB, 1\\) } | Format-Table -AutoSize; $img.Dispose\\(\\))",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $f = Get-Item 'E:\\\\projects\\\\새-게임-프로젝트\\\\assets\\\\backgrounds\\\\bg_01.png'; $img = [System.Drawing.Image]::FromFile\\($f.FullName\\); [PSCustomObject]@{ File = $f.Name; Width = $img.Width; Height = $img.Height; AspectRatio = \\($img.Width / $img.Height\\).ToString\\('0.000'\\); SizeKB = [math]::Round\\($f.Length/1KB, 1\\) } | Format-Table -AutoSize; $img.Dispose\\(\\))",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $f = Get-Item 'E:\\\\projects\\\\새-게임-프로젝트\\\\assets\\\\backgrounds\\\\bg_01.png'; $img = [System.Drawing.Image]::FromFile\\($f.FullName\\); [PSCustomObject]@{ File = $f.Name; Width = $img.Width; Height = $img.Height; SizeMB = [math]::Round\\($f.Length/1MB, 2\\) } | Format-Table -AutoSize; $img.Dispose\\(\\))",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $f = Get-Item 'E:\\\\projects\\\\새-게임-프로젝트\\\\assets\\\\ui\\\\ticket_bg_01.png'; $img = [System.Drawing.Image]::FromFile\\($f.FullName\\); [PSCustomObject]@{ File = $f.Name; Width = $img.Width; Height = $img.Height; SizeKB = [math]::Round\\($f.Length/1KB, 1\\) } | Format-Table -AutoSize; $img.Dispose\\(\\))",
+      "Bash(claude update *)",
+      "WebSearch",
+      "WebFetch(domain:docs.kplay.games)",
+      "Bash(\"C:/Users/jaeyeop.im.SUPERCAT/Downloads/Godot_v4.6.3-stable_win64.exe/Godot_v4.6.3-stable_win64_console.exe\" --headless --path \"E:/projects/새-게임-프로젝트\" --quit-after 120)",
+      "Bash(Select-String -Pattern \"Parse Error|SCRIPT ERROR|ERROR|업적|Failed to load|Backend\" -Context 0,1)",
+      "PowerShell($exe = \"C:\\\\Users\\\\jaeyeop.im.SUPERCAT\\\\Downloads\\\\Godot_v4.6.3-stable_win64.exe\\\\Godot_v4.6.3-stable_win64_console.exe\"; $out = & $exe --headless --path \"E:/projects/새-게임-프로젝트\" --quit-after 120 2>&1 | Out-String; $out -split \"`n\" | Where-Object { $_ -match \"Parse Error|SCRIPT ERROR|Failed to load|Backend|업적|Identifier\" } | Select-Object -First 40)",
+      "PowerShell($exe = \"C:\\\\Users\\\\jaeyeop.im.SUPERCAT\\\\Downloads\\\\Godot_v4.6.3-stable_win64.exe\\\\Godot_v4.6.3-stable_win64_console.exe\"; $out = & $exe --headless --path \"E:/projects/새-게임-프로젝트\" --quit-after 120 2>&1 | Out-String; $out -split \"`n\" | Where-Object { $_ -match \"backend|provider|achievements|autoload|Autoload|res://scripts\" } | Select-Object -First 50)",
+      "PowerShell($exe = \"C:\\\\Users\\\\jaeyeop.im.SUPERCAT\\\\Downloads\\\\Godot_v4.6.3-stable_win64.exe\\\\Godot_v4.6.3-stable_win64_console.exe\"; $out = & $exe --headless --path \"E:/projects/새-게임-프로젝트\" --quit-after 120 2>&1 | Out-String; $errs = $out -split \"`n\" | Where-Object { $_ -match \"Parse Error|SCRIPT ERROR|Failed to load|Identifier\" }; if \\($errs\\) { \"=== ERRORS ===\"; $errs | Select-Object -First 40 } else { \"=== NO PARSE/SCRIPT ERRORS ===\" })",
+      "PowerShell(Test-Path *)",
+      "PowerShell($exe = \"C:\\\\Users\\\\jaeyeop.im.SUPERCAT\\\\Downloads\\\\Godot_v4.6.3-stable_win64.exe\\\\Godot_v4.6.3-stable_win64_console.exe\"; $out = & $exe --headless --path \"E:/projects/새-게임-프로젝트\" --quit-after 120 2>&1 | Out-String; $errs = $out -split \"`n\" | Where-Object { $_ -match \"Parse Error|SCRIPT ERROR|Failed to load|Identifier|kplay_provider\" }; if \\($errs\\) { \"=== ERRORS ===\"; $errs | Select-Object -First 40 } else { \"=== NO PARSE/SCRIPT ERRORS ===\" })",
+      "PowerShell($exe = \"C:\\\\Users\\\\jaeyeop.im.SUPERCAT\\\\Downloads\\\\Godot_v4.6.3-stable_win64.exe\\\\Godot_v4.6.3-stable_win64_console.exe\"; $out = & $exe --headless --path \"E:/projects/새-게임-프로젝트\" --quit-after 120 2>&1 | Out-String; $errs = $out -split \"`n\" | Where-Object { $_ -match \"Parse Error|SCRIPT ERROR|Failed to load|Identifier|Invalid|error\" }; if \\($errs\\) { \"=== ISSUES ===\"; $errs | Select-Object -First 40 } else { \"=== NO PARSE/SCRIPT ERRORS ===\" })",
+      "PowerShell($exe = \"C:\\\\Users\\\\jaeyeop.im.SUPERCAT\\\\Downloads\\\\Godot_v4.6.3-stable_win64.exe\\\\Godot_v4.6.3-stable_win64_console.exe\"; $out = & $exe --headless --path \"E:/projects/새-게임-프로젝트\" --quit-after 120 2>&1 | Out-String; $errs = $out -split \"`n\" | Where-Object { $_ -match \"Parse Error|SCRIPT ERROR|Failed to load|Identifier|Invalid|_dev_shot|DevShot\" }; if \\($errs\\) { \"=== ISSUES ===\"; $errs | Select-Object -First 40 } else { \"=== NO PARSE/SCRIPT ERRORS ===\" })",
+      "PowerShell($exe = \"C:\\\\Users\\\\jaeyeop.im.SUPERCAT\\\\Downloads\\\\Godot_v4.6.3-stable_win64.exe\\\\Godot_v4.6.3-stable_win64_console.exe\"; $out = & $exe --headless --path \"E:/projects/새-게임-프로젝트\" --quit-after 120 2>&1 | Out-String; $errs = $out -split \"`n\" | Where-Object { $_ -match \"Parse Error|SCRIPT ERROR|Failed to load|Identifier|Invalid|achievements\" }; if \\($errs\\) { \"=== ISSUES ===\"; $errs | Select-Object -First 40 } else { \"=== NO PARSE/SCRIPT ERRORS ===\" })",
+      "PowerShell($exe = \"C:\\\\Users\\\\jaeyeop.im.SUPERCAT\\\\Downloads\\\\Godot_v4.6.3-stable_win64.exe\\\\Godot_v4.6.3-stable_win64_console.exe\"; $out = & $exe --headless --path \"E:/projects/새-게임-프로젝트\" --quit-after 120 2>&1 | Out-String; $errs = $out -split \"`n\" | Where-Object { $_ -match \"Parse Error|SCRIPT ERROR|Failed to load|Identifier|Invalid|DevTest|_dev\" }; if \\($errs\\) { \"=== ISSUES ===\"; $errs | Select-Object -First 40 } else { \"=== NO PARSE/SCRIPT ERRORS ===\" })",
+      "Skill(update-config)",
+      "Bash([ -f \"$f\" ])",
+      "Bash(node -e 'JSON.parse\\(require\\('\\\\''fs'\\\\''\\).readFileSync\\('\\\\''E:/projects/새-게임-프로젝트/.claude/settings.local.json'\\\\'','\\\\''utf8'\\\\''\\)\\); console.log\\('\\\\''JSON OK; defaultMode ='\\\\'', JSON.parse\\(require\\('\\\\''fs'\\\\''\\).readFileSync\\('\\\\''E:/projects/새-게임-프로젝트/.claude/settings.local.json'\\\\'','\\\\''utf8'\\\\''\\)\\).permissions.defaultMode\\)')",
+      "Bash(python -c 'import json;d=json.load\\(open\\('\\\\''E:/projects/새-게임-프로젝트/.claude/settings.local.json'\\\\'',encoding='\\\\''utf-8'\\\\''\\)\\);print\\('\\\\''JSON OK; defaultMode ='\\\\'',d['\\\\''permissions'\\\\'']['\\\\''defaultMode'\\\\'']\\)')"
+    ],
+    "defaultMode": "bypassPermissions"
+  }
+}

@@ -1,0 +1,12 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# 빌드 산출물 (웹 export·배포 zip 작업물) — 로컬에서만, 깃 미추적
+# ⚠️ /build/(디렉토리 제외)가 아니라 /build/*(내용물 제외)로 — build/.gdignore(에디터 스캔 차단)는 추적해야
+#    재클론/클린 후에도 빌드 산출물이 에디터에 임포트되지 않는다(과거 web/frame_bg.png UID 중복 사고 계열).
+/build/*
+!/build/.gdignore
+
+# AI 협업 브릿지 (Claude Code ↔ Codex 로컬 우편함) — 논의 채널, 커밋 히스토리 미오염
+/.ai-bridge/

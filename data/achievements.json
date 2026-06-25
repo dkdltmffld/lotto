@@ -1,0 +1,36 @@
+{
+  "catalog": {
+    "first_blood": {
+      "name": "첫 처치",
+      "desc": "첫 적을 쓰러뜨렸다",
+      "stat": "total_kills",
+      "threshold": 1
+    },
+    "kill_50": {
+      "name": "백전노장",
+      "desc": "누적 50명 처치",
+      "stat": "total_kills",
+      "threshold": 50
+    },
+    "kill_200": {
+      "name": "전장의 지배자",
+      "desc": "누적 200명 처치",
+      "stat": "total_kills",
+      "threshold": 200
+    },
+    "score_1000": {
+      "name": "고득점",
+      "desc": "한 판 1000점 달성",
+      "stat": "high_score",
+      "threshold": 1000
+    },
+    "four_kind": {
+      "name": "포 카드",
+      "desc": "같은 숫자 4개 족보 달성"
+    },
+    "jackpot": {
+      "name": "잭팟!",
+      "desc": "9칸 모두 같은 숫자 달성"
+    }
+  }
+}

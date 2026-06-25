@@ -1,0 +1,73 @@
+# ============================================================
+# upgrades — 강화(성장) 트랙 (전부 잠정값, 튜닝 전)
+# 출처: 기존 scripts/upgrades.gd. 게임은 변환 산출물 data/upgrades.json 을 읽는다.
+#   value(level) = base_val + per_level * level   (선형 — 싸고 자주 누르는 결)
+#   cost(level)  = base_cost * cost_growth^level   (지수)
+#   max_level 생략 = 무제한(-1). kind: char(캐릭터) / card(복권) / util(저장소)
+# 원본(여기) 수정 후 변환: godot --headless --path . --script res://tools/build_data.gd
+# ============================================================
+
+# 강화 패널/HUD 표시 순서
+order: [attack, hp, hp_regen, card_mult, auto_speed, brush, storage]
+
+tracks:
+  attack:
+    name: "공격력"
+    kind: char
+    base_cost: 10.0
+    cost_growth: 1.15
+    base_val: 5.0
+    per_level: 2.0
+    note: "캐릭터 기본 공격력(베이스). 일반 공격·스크래치 스킬 둘 다의 바닥을 올림."
+
+  # (구 attack_speed 트랙 폐지 2026-06-15 — 자동공격 속도는 고정값 balance.auto_attack.speed 로 이전)
+  hp:
+    name: "체력"
+    kind: char
+    base_cost: 15.0
+    cost_growth: 1.18
+    base_val: 100.0
+    per_level: 40.0
+    note: "보스전 생존력."
+  hp_regen:
+    name: "체력 재생"
+    kind: char
+    base_cost: 20.0
+    cost_growth: 1.20
+    base_val: 2.0          # 초당 HP 자동 회복량(절대값). 일반 스테이지 진행 중 깎인 HP 회복.
+    per_level: 2.0
+    note: "초당 HP 자동 회복량. 일반몹 피해를 메우는 생존 유지축."
+  card_mult:
+    name: "복권 배율"
+    kind: card
+    base_cost: 25.0
+    cost_growth: 1.22
+    base_val: 1.0
+    per_level: 0.15
+    note: "족보배율에 곱해지는 복권 성장. 데미지 곱연산의 천장을 올림."
+  auto_speed:
+    name: "자동 긁기 속도"
+    kind: card
+    base_cost: 40.0
+    cost_growth: 1.35
+    base_val: 0.6
+    per_level: 0.25
+    max_level: 12          # 상한 + 긴 텀
+    note: "방치 DPS(분당 복권 수)."
+  brush:
+    name: "긁기 범위"
+    kind: card
+    base_cost: 35.0
+    cost_growth: 1.28
+    base_val: 30.0         # 브러시 반지름(px)
+    per_level: 5.0
+    max_level: 10          # 너무 커지면 한 번에 다 긁혀 의미 없음
+    note: "수동 긁기 브러시 반지름."
+  storage:
+    name: "저장소"
+    kind: util
+    base_cost: 30.0
+    cost_growth: 1.25
+    base_val: 1000.0       # 오프라인 누적 상한(골드)
+    per_level: 1500.0
+    note: "오프라인 골드 누적 상한."

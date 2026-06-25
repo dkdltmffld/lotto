@@ -1,0 +1,109 @@
+# 유물(족보 커스텀) 데이터 — 더미. 기획: docs/design/족보 스킬 시스템 정리본.md §5
+# 변환: tools/build_data.gd → data/relics.json → GameData.table("relics") → scripts/relics.gd(Relics).
+# ⚠️ 파서: 블록맵만(인라인맵 {} X), 인라인 리스트 [a, b]만 지원. equipment.yaml 과 동일 규칙.
+#
+# 유물 = {효과(catalog key), 등급}. 가챠가 등급(weight)+효과(catalog 무작위)를 롤한다.
+# 파워는 등급으로만(per-유물 레벨업 없음 — 수평 정체성). 효과 강도 = 아래 등급별 테이블.
+
+# 등급(가챠 가중치). 장비와 동일 5단계.
+grade_order: [common, rare, epic, legendary, mythic]
+grades:
+  common:
+    weight: 60
+  rare:
+    weight: 28
+  epic:
+    weight: 9
+  legendary:
+    weight: 2.5
+  mythic:
+    weight: 0.5
+
+slots: 5            # 동시 장착 슬롯 (초반 1~2 해금은 TBD)
+
+# 유물 복권(가챠) 비용 = 유물 가루(dust). 잠정.
+gacha:
+  cost_dust: 100
+  cost_dust_11: 1000
+
+# 초반 무료 확정 소환(부트스트랩): 사전 설정된 유물을 순서대로 무료 지급(효과·등급 지정).
+#   가루/보스 전에 유물 빌드를 일찍 체감시켜 "보스10 전까지 유물 0" 메마름 해소.
+#   무료 횟수 = effects 길이. N번째 무료 소환 = {effects[N], grades[N]}. (parser: 인라인 리스트만 — dict 리스트 X)
+#   ⚠️ effects 는 catalog 키, grades 는 위 grades 키. effects 와 grades 는 같은 길이로. 잠정.
+free_pull:
+  effects: [r_dist_low]   # 줄 유물 효과(catalog 키), 순서대로
+  grades:  [rare]         # 각 효과의 등급(effects 와 같은 길이)
+
+# 상점 > 재화: 유물 가루 구매(일단 다이아 결제 — placeholder). amounts/costs 병렬(파서 제약). 잠정 1:1.
+dust_shop:
+  amounts: [100, 1000]    # 한 번에 사는 가루 양
+  costs:   [100, 1000]    # 각 다이아 비용(amounts 와 같은 길이)
+
+# ── 효과별 등급 강도 테이블 (전부 잠정 — 밸런스 때 튜닝) ──
+# ① 저숫자 억제: 등급→낮은 숫자 가중치 감소율(1.0=완전 제거). 누적 시 낮은 숫자부터 차례로.
+dist_suppress:
+  common: 0.30
+  rare: 0.50
+  epic: 0.70
+  legendary: 0.90
+  mythic: 1.0
+# ⑤ 등급 보정: 등급→배율 보너스(+). band(low/mid/high) 족보 적중 시 데미지 ×(1+보너스).
+grade_mult:
+  common: 0.20
+  rare: 0.40
+  epic: 0.70
+  legendary: 1.20
+  mythic: 2.00
+# ④ 와일드: 등급→1칸 와일드 발생 확률. (Phase B 배선)
+wild_chance:
+  common: 0.40
+  rare: 0.55
+  epic: 0.70
+  legendary: 0.85
+  mythic: 1.0
+# ② 족보 확장: 등급→해금 패턴 배율 보너스(추가 배수). (Phase B 배선)
+expand_mult:
+  common: 0.5
+  rare: 1.0
+  epic: 1.8
+  legendary: 3.0
+  mythic: 5.0
+
+# ⑤ 밴드 정의 = 보정 대상 족보 count 범위 [lo, hi].
+bands_low: [2, 3]
+bands_mid: [4, 6]
+bands_high: [7, 9]
+
+# degeneracy 가드
+pool_floor: 3       # ① 분포 좁힘 후 가중치 양수 숫자 최소 개수
+wild_cap: 2         # ④ 와일드 칸 상한(여러 개 장착해도)
+
+# 유물 카탈로그 (효과 템플릿 — grade 는 가챠가 롤). kind: dist_suppress/grade_mult/wild/expand.
+catalog_order: [r_dist_low, r_boost_low, r_boost_mid, r_boost_high, r_wild, r_expand_2pair, r_expand_full]
+catalog:
+  r_dist_low:
+    name: "고숫자의 부적"
+    kind: dist_suppress
+  r_boost_low:
+    name: "저족보 메달"
+    kind: grade_mult
+    band: low
+  r_boost_mid:
+    name: "중족보 메달"
+    kind: grade_mult
+    band: mid
+  r_boost_high:
+    name: "고족보 메달"
+    kind: grade_mult
+    band: high
+  r_wild:
+    name: "만능 복권"
+    kind: wild
+  r_expand_2pair:
+    name: "투페어 증서"
+    kind: expand
+    pattern: two_pair
+  r_expand_full:
+    name: "풀하우스 증서"
+    kind: expand
+    pattern: full_house

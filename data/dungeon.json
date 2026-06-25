@@ -1,0 +1,192 @@
+{
+  "floors": {
+    "floor_1": {
+      "stage_equiv": 4,
+      "hp_mult": 1.25,
+      "dia": 30,
+      "dust": 40
+    },
+    "floor_2": {
+      "stage_equiv": 7,
+      "hp_mult": 1.25,
+      "dia": 30,
+      "dust": 55
+    },
+    "floor_3": {
+      "stage_equiv": 10,
+      "hp_mult": 1.25,
+      "dia": 30,
+      "dust": 70
+    },
+    "floor_4": {
+      "stage_equiv": 13,
+      "hp_mult": 1.25,
+      "dia": 40,
+      "dust": 85
+    },
+    "floor_5": {
+      "stage_equiv": 17,
+      "hp_mult": 1.25,
+      "hand_gate": 2,
+      "dia": 40,
+      "dust": 100
+    },
+    "floor_6": {
+      "stage_equiv": 21,
+      "hp_mult": 1.25,
+      "dia": 40,
+      "dust": 120
+    },
+    "floor_7": {
+      "stage_equiv": 25,
+      "hp_mult": 1.25,
+      "time_limit": 60,
+      "dia": 50,
+      "dust": 140
+    },
+    "floor_8": {
+      "stage_equiv": 30,
+      "hp_mult": 1.25,
+      "dia": 50,
+      "dust": 160
+    },
+    "floor_9": {
+      "stage_equiv": 35,
+      "hp_mult": 1.25,
+      "pc_atk_down": 0.4,
+      "dia": 50,
+      "dust": 180
+    },
+    "floor_10": {
+      "stage_equiv": 40,
+      "hp_mult": 1.5,
+      "hand_gate": 2,
+      "time_limit": 70,
+      "dia": 100,
+      "dust": 200
+    },
+    "floor_11": {
+      "stage_equiv": 45,
+      "hp_mult": 1.35,
+      "dust": 215
+    },
+    "floor_12": {
+      "stage_equiv": 51,
+      "hp_mult": 1.35,
+      "hand_gate": 3,
+      "dust": 230
+    },
+    "floor_13": {
+      "stage_equiv": 57,
+      "hp_mult": 1.35,
+      "time_limit": 55,
+      "dust": 245
+    },
+    "floor_14": {
+      "stage_equiv": 63,
+      "hp_mult": 1.35,
+      "dust": 260
+    },
+    "floor_15": {
+      "stage_equiv": 69,
+      "hp_mult": 1.35,
+      "pc_atk_down": 0.5,
+      "dust": 280
+    },
+    "floor_16": {
+      "stage_equiv": 76,
+      "hp_mult": 1.35,
+      "hand_gate": 2,
+      "dust": 300
+    },
+    "floor_17": {
+      "stage_equiv": 83,
+      "hp_mult": 1.35,
+      "time_limit": 50,
+      "dust": 320
+    },
+    "floor_18": {
+      "stage_equiv": 90,
+      "hp_mult": 1.35,
+      "dust": 340
+    },
+    "floor_19": {
+      "stage_equiv": 97,
+      "hp_mult": 1.35,
+      "hand_gate": 3,
+      "pc_atk_down": 0.4,
+      "dust": 360
+    },
+    "floor_20": {
+      "stage_equiv": 105,
+      "hp_mult": 1.6,
+      "hand_gate": 3,
+      "time_limit": 60,
+      "dust": 400
+    },
+    "floor_21": {
+      "stage_equiv": 113,
+      "hp_mult": 1.4,
+      "dust": 420
+    },
+    "floor_22": {
+      "stage_equiv": 121,
+      "hp_mult": 1.4,
+      "pc_atk_down": 0.5,
+      "dust": 440
+    },
+    "floor_23": {
+      "stage_equiv": 129,
+      "hp_mult": 1.4,
+      "time_limit": 50,
+      "dust": 460
+    },
+    "floor_24": {
+      "stage_equiv": 138,
+      "hp_mult": 1.4,
+      "hand_gate": 3,
+      "dust": 480
+    },
+    "floor_25": {
+      "stage_equiv": 147,
+      "hp_mult": 1.4,
+      "hand_gate": 2,
+      "time_limit": 45,
+      "dust": 500
+    },
+    "floor_26": {
+      "stage_equiv": 156,
+      "hp_mult": 1.4,
+      "pc_atk_down": 0.5,
+      "dust": 520
+    },
+    "floor_27": {
+      "stage_equiv": 165,
+      "hp_mult": 1.4,
+      "time_limit": 45,
+      "dust": 540
+    },
+    "floor_28": {
+      "stage_equiv": 174,
+      "hp_mult": 1.4,
+      "hand_gate": 3,
+      "pc_atk_down": 0.5,
+      "dust": 560
+    },
+    "floor_29": {
+      "stage_equiv": 184,
+      "hp_mult": 1.4,
+      "hand_gate": 3,
+      "time_limit": 50,
+      "dust": 580
+    },
+    "floor_30": {
+      "stage_equiv": 194,
+      "hp_mult": 1.8,
+      "hand_gate": 3,
+      "time_limit": 60,
+      "pc_atk_down": 0.5,
+      "dust": 650
+    }
+  }
+}

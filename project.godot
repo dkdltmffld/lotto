@@ -1,0 +1,67 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="복권 키우기 : Idle RPG"
+run/main_scene="res://scenes/login.tscn"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+boot_splash/bg_color=Color(0.0941, 0.1765, 0.1333, 1)
+boot_splash/image="res://assets/backgrounds/bg_main.png"
+config/icon="res://icon.svg"
+
+[autoload]
+
+BackendService="*res://scripts/backend/backend_service.gd"
+Audio="*res://scripts/audio_manager.gd"
+Events="*res://scripts/event_bus.gd"
+UIManager="*res://scripts/ui_manager.gd"
+NotificationManager="*res://scripts/notification_manager.gd"
+MCPGameBridge="res://addons/godot_mcp/game_bridge/mcp_game_bridge.gd"
+
+[display]
+
+window/size/viewport_width=360
+window/size/viewport_height=780
+window/size/window_width_override=432
+window/size/window_height_override=936
+window/stretch/mode="canvas_items"
+window/per_pixel_transparency/allowed=true
+window/handheld/orientation=1
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg")
+
+[godot_mcp]
+
+bind_mode=0
+custom_bind_ip=""
+port_override_enabled=false
+port_override=6550
+
+[gui]
+
+theme/custom_font="res://assets/fonts/korean.ttf"
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+rendering_device/driver.windows="d3d12"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

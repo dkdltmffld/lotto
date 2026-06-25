@@ -1,0 +1,41 @@
+version: "1.0"
+game: lotto-idle-rpg
+source_concepts:
+  - lotto_main_hud_scratch_concept_a
+status: draft
+
+blockers:
+  - id: wrong_orientation
+    desc: "Not portrait 360x780/9:19.5 compatible."
+  - id: scratch_not_usable
+    desc: "Scratch grid is too small, hidden, or visually reads as unrelated rewards."
+  - id: combat_hidden
+    desc: "Main idle combat loop is obscured by UI."
+  - id: baked_live_text
+    desc: "Runtime labels, values, prices, or counters are baked into skins."
+  - id: html5_heavy_asset
+    desc: "Asset plan implies large opaque full-screen UI bitmaps instead of reusable atoms."
+
+weighted_criteria:
+  scratch_identity:
+    weight: 30
+    pass: "Scratch card clearly reads as the attack mechanic."
+  mobile_readability:
+    weight: 25
+    pass: "Primary information and touch targets are readable at 360px width."
+  combat_visibility:
+    weight: 20
+    pass: "Hero/enemy/damage remain visible during idle play."
+  reusable_components:
+    weight: 15
+    pass: "Panels/buttons/icons can be implemented as reusable Godot components."
+  project_fit:
+    weight: 10
+    pass: "Matches existing dark wood/pixel UI direction without forcing a total reset."
+
+review_outputs:
+  verdicts: [PASS, WARN, ERROR]
+  required_evidence:
+    - concept path
+    - component section reviewed
+    - specific next edit or approval reason

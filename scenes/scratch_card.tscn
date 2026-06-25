@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://0g0rqik8bhd5"]
+
+[ext_resource type="Script" uid="uid://dn800ykogg1h0" path="res://scripts/scratch_card.gd" id="1_sc"]
+
+[node name="ScratchCard" type="Control" unique_id=1577521304]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_sc")

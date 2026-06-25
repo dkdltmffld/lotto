@@ -1,0 +1,47 @@
+version: "1.0"
+game: lotto-idle-rpg
+source_concepts:
+  - lotto_main_hud_scratch_concept_a
+status: draft
+
+skins:
+  top_hud_frame:
+    component: TopHudFrame
+    mode: reuse_existing_sheet
+    godot_helper: UISkin.top_bar
+    source: scripts/ui_skin.gd:R_TOPBAR
+    usage: StyleBoxTexture
+    slice_hints_px: { left: 24, right: 24, top: 24, bottom: 24 }
+    content_insets_px: { left: 8, right: 8, top: 8, bottom: 6 }
+  scratch_panel_frame:
+    component: ScratchPanelFrame
+    mode: reuse_existing_sheet
+    godot_helper: UISkin.scratch_bg
+    source: scripts/ui_skin.gd:R_SCRATCH_BG
+    usage: StyleBoxTexture
+    slice_hints_px: { left: 28, right: 28, top: 28, bottom: 28 }
+    content_insets_px: { left: 10, right: 10, top: 10, bottom: 10 }
+  nav_dock_frame:
+    component: NavDockFrame
+    mode: reuse_existing_sheet
+    godot_helper: UISkin.nav_bg
+    source: scripts/ui_skin.gd:R_NAV_BG
+    usage: StyleBoxTexture
+    slice_hints_px: { left: 20, right: 20, top: 20, bottom: 20 }
+  nav_tab_button:
+    component: NavTabButton
+    mode: reuse_existing_sheet
+    godot_helper: UISkin.skin_button(nav)
+    source: scripts/ui_skin.gd:R_NAV_BTN
+    usage: StyleBoxTexture
+  green_cta_button:
+    component: UpgradeCtaButton
+    mode: reuse_existing_sheet
+    godot_helper: UISkin.skin_button(buy)
+    source: scripts/ui_skin.gd:R_BUY
+    usage: StyleBoxTexture
+
+skin_policy:
+  text_baking: forbidden_for_runtime_labels
+  live_values: native_godot_labels
+  icon_policy: "Existing icons can be reused; new final icons should be generated through /gen-ui-assets and recorded in asset-plan.yaml."

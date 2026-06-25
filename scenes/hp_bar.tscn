@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://chpbar001"]
+
+[node name="HPBar" type="ProgressBar"]
+custom_minimum_size = Vector2(50, 8)
+offset_right = 50.0
+offset_bottom = 8.0
+max_value = 100.0
+value = 100.0
+show_percentage = false

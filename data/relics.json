@@ -1,0 +1,135 @@
+{
+  "grade_order": [
+    "common",
+    "rare",
+    "epic",
+    "legendary",
+    "mythic"
+  ],
+  "grades": {
+    "common": {
+      "weight": 60
+    },
+    "rare": {
+      "weight": 28
+    },
+    "epic": {
+      "weight": 9
+    },
+    "legendary": {
+      "weight": 2.5
+    },
+    "mythic": {
+      "weight": 0.5
+    }
+  },
+  "slots": 5,
+  "gacha": {
+    "cost_dust": 100,
+    "cost_dust_11": 1000
+  },
+  "free_pull": {
+    "effects": [
+      "r_dist_low"
+    ],
+    "grades": [
+      "rare"
+    ]
+  },
+  "dust_shop": {
+    "amounts": [
+      100,
+      1000
+    ],
+    "costs": [
+      100,
+      1000
+    ]
+  },
+  "dist_suppress": {
+    "common": 0.3,
+    "rare": 0.5,
+    "epic": 0.7,
+    "legendary": 0.9,
+    "mythic": 1.0
+  },
+  "grade_mult": {
+    "common": 0.2,
+    "rare": 0.4,
+    "epic": 0.7,
+    "legendary": 1.2,
+    "mythic": 2.0
+  },
+  "wild_chance": {
+    "common": 0.4,
+    "rare": 0.55,
+    "epic": 0.7,
+    "legendary": 0.85,
+    "mythic": 1.0
+  },
+  "expand_mult": {
+    "common": 0.5,
+    "rare": 1.0,
+    "epic": 1.8,
+    "legendary": 3.0,
+    "mythic": 5.0
+  },
+  "bands_low": [
+    2,
+    3
+  ],
+  "bands_mid": [
+    4,
+    6
+  ],
+  "bands_high": [
+    7,
+    9
+  ],
+  "pool_floor": 3,
+  "wild_cap": 2,
+  "catalog_order": [
+    "r_dist_low",
+    "r_boost_low",
+    "r_boost_mid",
+    "r_boost_high",
+    "r_wild",
+    "r_expand_2pair",
+    "r_expand_full"
+  ],
+  "catalog": {
+    "r_dist_low": {
+      "name": "고숫자의 부적",
+      "kind": "dist_suppress"
+    },
+    "r_boost_low": {
+      "name": "저족보 메달",
+      "kind": "grade_mult",
+      "band": "low"
+    },
+    "r_boost_mid": {
+      "name": "중족보 메달",
+      "kind": "grade_mult",
+      "band": "mid"
+    },
+    "r_boost_high": {
+      "name": "고족보 메달",
+      "kind": "grade_mult",
+      "band": "high"
+    },
+    "r_wild": {
+      "name": "만능 복권",
+      "kind": "wild"
+    },
+    "r_expand_2pair": {
+      "name": "투페어 증서",
+      "kind": "expand",
+      "pattern": "two_pair"
+    },
+    "r_expand_full": {
+      "name": "풀하우스 증서",
+      "kind": "expand",
+      "pattern": "full_house"
+    }
+  }
+}

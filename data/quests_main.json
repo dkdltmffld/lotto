@@ -1,0 +1,231 @@
+{
+  "quests": {
+    "main_kill_3": {
+      "title": "첫 사냥",
+      "desc": "적 3마리 처치",
+      "stat": "total_kills",
+      "target": 3,
+      "rewards": {
+        "dia": 50
+      }
+    },
+    "main_upgrade_3": {
+      "title": "더 강하게",
+      "desc": "강화 3회",
+      "stat": "upgrades_bought",
+      "target": 3,
+      "rewards": {
+        "dia": 50
+      }
+    },
+    "main_kill_20": {
+      "title": "사냥 계속",
+      "desc": "적 20마리 처치",
+      "stat": "total_kills",
+      "target": 20,
+      "rewards": {
+        "dia": 100
+      }
+    },
+    "main_upgrade_8": {
+      "title": "성장의 길",
+      "desc": "강화 8회",
+      "stat": "upgrades_bought",
+      "target": 8,
+      "rewards": {
+        "dia": 100
+      }
+    },
+    "main_upgrade_attack_3": {
+      "title": "공격 특화",
+      "desc": "공격력 강화 3회",
+      "stat": "upgrades_bought_attack",
+      "target": 3,
+      "rewards": {
+        "dia": 50
+      }
+    },
+    "main_upgrade_hp_3": {
+      "title": "튼튼하게",
+      "desc": "체력 강화 3회",
+      "stat": "upgrades_bought_hp",
+      "target": 3,
+      "rewards": {
+        "dia": 50
+      }
+    },
+    "main_upgrade_hp_regen_2": {
+      "title": "꾸준한 회복",
+      "desc": "체력 재생 강화 2회",
+      "stat": "upgrades_bought_hp_regen",
+      "target": 2,
+      "rewards": {
+        "dia": 50
+      }
+    },
+    "main_upgrade_card_mult_3": {
+      "title": "대박의 예감",
+      "desc": "복권 배율 강화 3회",
+      "stat": "upgrades_bought_card_mult",
+      "target": 3,
+      "rewards": {
+        "dia": 50
+      }
+    },
+    "main_attack_lv_5": {
+      "title": "공격의 경지",
+      "desc": "공격력 5단계 달성",
+      "stat": "level_attack",
+      "target": 5,
+      "rewards": {
+        "dia": 100
+      }
+    },
+    "main_hp_lv_5": {
+      "title": "불굴의 체력",
+      "desc": "체력 5단계 달성",
+      "stat": "level_hp",
+      "target": 5,
+      "rewards": {
+        "dia": 100
+      }
+    },
+    "main_hp_regen_lv_3": {
+      "title": "끝없는 회복",
+      "desc": "체력 재생 3단계 달성",
+      "stat": "level_hp_regen",
+      "target": 3,
+      "rewards": {
+        "dia": 100
+      }
+    },
+    "main_card_mult_lv_5": {
+      "title": "행운의 정점",
+      "desc": "복권 배율 5단계 달성",
+      "stat": "level_card_mult",
+      "target": 5,
+      "rewards": {
+        "dia": 100
+      }
+    },
+    "main_equip_pull_1": {
+      "title": "장비 소환",
+      "desc": "장비 소환 1회",
+      "stat": "equipment_pulls",
+      "target": 1,
+      "rewards": {
+        "dia": 50
+      }
+    },
+    "main_stage_10": {
+      "title": "여정의 시작",
+      "desc": "스테이지 5 도달",
+      "stat": "stage_reached",
+      "target": 5,
+      "rewards": {
+        "dia": 100
+      }
+    },
+    "main_stage_20": {
+      "title": "발걸음을 내딛다",
+      "desc": "스테이지 10 도달",
+      "stat": "stage_reached",
+      "target": 10,
+      "rewards": {
+        "dia": 120
+      }
+    },
+    "main_stage_30": {
+      "title": "더 깊은 곳으로",
+      "desc": "스테이지 15 도달",
+      "stat": "stage_reached",
+      "target": 15,
+      "rewards": {
+        "dia": 140
+      }
+    },
+    "main_stage_40": {
+      "title": "익숙한 사냥터",
+      "desc": "스테이지 20 도달",
+      "stat": "stage_reached",
+      "target": 20,
+      "rewards": {
+        "dia": 160
+      }
+    },
+    "main_stage_50": {
+      "title": "절반의 정상",
+      "desc": "스테이지 25 도달",
+      "stat": "stage_reached",
+      "target": 25,
+      "rewards": {
+        "dia": 180
+      }
+    },
+    "main_stage_60": {
+      "title": "미지의 영역",
+      "desc": "스테이지 30 도달",
+      "stat": "stage_reached",
+      "target": 30,
+      "rewards": {
+        "dia": 200
+      }
+    },
+    "main_stage_70": {
+      "title": "한계를 넘어",
+      "desc": "스테이지 35 도달",
+      "stat": "stage_reached",
+      "target": 35,
+      "rewards": {
+        "dia": 220
+      }
+    },
+    "main_stage_80": {
+      "title": "깊은 어둠 속",
+      "desc": "스테이지 40 도달",
+      "stat": "stage_reached",
+      "target": 40,
+      "rewards": {
+        "dia": 240
+      }
+    },
+    "main_stage_90": {
+      "title": "끝이 보이는 길",
+      "desc": "스테이지 50 도달",
+      "stat": "stage_reached",
+      "target": 50,
+      "rewards": {
+        "dia": 260
+      }
+    },
+    "main_stage_100": {
+      "title": "백 번째 관문",
+      "desc": "스테이지 60 도달",
+      "stat": "stage_reached",
+      "target": 60,
+      "rewards": {
+        "dia": 300
+      }
+    },
+    "main_boss_1": {
+      "title": "첫 보스",
+      "desc": "보스 1회 처치",
+      "stat": "boss_kills",
+      "target": 1,
+      "rewards": {
+        "dia": 100,
+        "dust": 100
+      }
+    },
+    "main_boss_2": {
+      "title": "보스 사냥꾼",
+      "desc": "보스 2회 처치",
+      "stat": "boss_kills",
+      "target": 2,
+      "rewards": {
+        "dia": 150,
+        "dust": 150
+      }
+    }
+  }
+}

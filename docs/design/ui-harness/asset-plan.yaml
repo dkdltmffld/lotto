@@ -1,0 +1,119 @@
+version: "1.0"
+game: lotto-idle-rpg
+source_concepts:
+  - lotto_main_hud_scratch_concept_a
+status: assets_generated
+
+assetization_summary:
+  generate_image:
+    - ui.icon.nav_set_v1
+    - ui.icon.resource_bonus_set_v1
+    - ui.effect.scratch_foil_highlight_v1
+  native_ui:
+    - ScratchGrid
+    - RedDotBadge
+    - all labels and live values
+    - progress bars unless a framed skin is requested
+  hybrid:
+    - TopHudFrame
+    - ResourceChip
+    - ScratchPanelFrame
+    - BonusInfoCard
+    - NavTabButton
+  reuse:
+    - assets/ui/UI_sheet.png
+    - assets/ui/icon/icon_gold.png
+    - assets/ui/icon/icon_dia.png
+    - assets/ui/icon/icon_settings.png
+    - assets/ui/icon/icon_mail.png
+
+assets:
+  - key: ui.skin.top_hud_frame
+    type: nine_slice_panel
+    mode: reuse
+    platforms: [godot]
+    target_path: assets/ui/UI_sheet.png
+    usage:
+      - component-blueprints.yaml:TopHudFrame
+    godot:
+      usage: StyleBoxTexture
+      helper: UISkin.top_bar
+      region_source: scripts/ui_skin.gd:R_TOPBAR
+    priority: must
+  - key: ui.skin.scratch_panel_frame
+    type: nine_slice_panel
+    mode: reuse
+    platforms: [godot]
+    target_path: assets/ui/UI_sheet.png
+    usage:
+      - component-blueprints.yaml:ScratchPanelFrame
+    godot:
+      usage: StyleBoxTexture
+      helper: UISkin.scratch_bg
+      region_source: scripts/ui_skin.gd:R_SCRATCH_BG
+    priority: must
+  - key: ui.icon.nav_set_v1
+    type: ui_icon_set
+    mode: generate_image
+    status: generated
+    platforms: [godot]
+    target_path: assets/ui/generated/nav_icons_v1.png
+    source_path: assets/ui/generated/nav_icons_v1.source_imagegen.png
+    generated_at: "2026-06-16"
+    alpha_cleanup:
+      method: remove_chroma_key.py
+      key_source: border
+      key_color: "#fa03f6"
+      options: [soft_matte, despill]
+    usage:
+      - component-blueprints.yaml:NavTabButton.icon
+    prompt_notes: "Five pixel-art RPG tab icons for combat, hero, bag, dungeon locked/available, and shop. Transparent or chroma-key source, dark outline, gold/wood UI compatibility, no text."
+    background: transparent
+    target_size: { width: 512, height: 128 }
+    variants: [combat, hero, bag, dungeon, shop]
+    priority: should
+  - key: ui.icon.resource_bonus_set_v1
+    type: ui_icon_set
+    mode: generate_image
+    status: generated
+    platforms: [godot]
+    target_path: assets/ui/generated/resource_bonus_icons_v1.png
+    source_path: assets/ui/generated/resource_bonus_icons_v1.source_imagegen.png
+    generated_at: "2026-06-16"
+    alpha_cleanup:
+      method: remove_chroma_key.py
+      key_source: border
+      key_color: "#fb04f9"
+      options: [soft_matte, despill]
+    usage:
+      - component-blueprints.yaml:ResourceChip.currency_icon
+      - component-blueprints.yaml:BonusInfoCard.icon_list
+    prompt_notes: "Small pixel-art resource/bonus icons: gold coin, dia gem, attack sword, heart HP, jackpot star, ticket. Transparent background, no labels."
+    background: transparent
+    target_size: { width: 512, height: 128 }
+    priority: should
+  - key: ui.effect.scratch_foil_highlight_v1
+    type: effect
+    mode: generate_image
+    status: generated_candidate
+    platforms: [godot]
+    target_path: assets/ui/generated/scratch_foil_highlight_v1.png
+    source_path: assets/ui/generated/scratch_foil_highlight_v1.source_imagegen.png
+    generated_at: "2026-06-16"
+    alpha_cleanup:
+      method: remove_chroma_key.py
+      key_source: border
+      key_color: "#fb08d7"
+      options: [soft_matte, despill, edge_contract_3]
+      note: "Some purple fringe remains on the irregular foil edge; review before wiring into runtime."
+    usage:
+      - component-blueprints.yaml:ScratchGrid.foil_overlay
+    prompt_notes: "Reusable silver scratch foil texture/highlight tile for a 3x3 lottery card. No numbers, no text, repeatable, pixel-art friendly."
+    background: transparent
+    target_size: { width: 256, height: 256 }
+    priority: nice
+
+rules:
+  - "Do not bake Korean labels or live numeric values into reusable assets."
+  - "Generated icons must record source imagegen output and any alpha cleanup when created."
+  - "Existing UI_sheet regions remain the default until a selected concept explicitly replaces them."

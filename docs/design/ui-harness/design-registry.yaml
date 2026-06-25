@@ -1,0 +1,21 @@
+version: "1.0"
+game: lotto-idle-rpg
+updated: "2026-06-16"
+concepts:
+  - id: lotto_main_hud_scratch_concept_a
+    status: extracted
+    created_by: gen-ui-concept
+    created_at: "2026-06-16"
+    image: concepts/lotto_main_hud_scratch_concept_a.png
+    note: concepts/lotto_main_hud_scratch_concept_a.md
+    target_surface: main_gameplay
+    runtime_target: godot
+    summary: "Portrait main gameplay concept covering top HUD, combat lane, scratch-card attack panel, and bottom navigation."
+    extracted_outputs:
+      - art-direction.yaml
+      - layout-tokens.yaml
+      - component-blueprints.yaml
+      - component-skins.yaml
+      - asset-plan.yaml
+      - motion-juice.yaml
+      - critique-rubric.yaml

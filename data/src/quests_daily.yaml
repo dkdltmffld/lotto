@@ -1,0 +1,65 @@
+# 일일 퀘스트 데이터 — 그날 base 대비 델타, 자정 리셋. 1차 더미.
+# 변환: tools/build_data.gd → data/quests_daily.json → GameData.table("quests_daily") → scripts/quests.gd(Quests).
+# (메인 퀘스트는 quests_main.yaml 로 분리 — 시트 분리.)
+# ⚠️ 파서: 블록맵만(인라인맵 {} X), 인라인 리스트 [a, b]만. rewards 는 통화키 맵({dia:30}).
+#
+# exposed=false 인 `소환`은 개발만 — 1차 패널 노출/red dot 제외(기획 §3-2·§11).
+# 허용 통화 = gold/dia/dust. stat = 행동량 누적. target/보상 전부 잠정(밸런스 단계 조정).
+
+quests:
+  daily_kill_01:
+    title: "오늘의 사냥 1"
+    desc: "적 100마리 처치"
+    stat: total_kills
+    target: 100
+    exposed: true
+    rewards:
+      dia: 20
+  daily_kill_02:
+    title: "오늘의 사냥 2"
+    desc: "적 200마리 처치"
+    stat: total_kills
+    target: 200
+    exposed: true
+    rewards:
+      dia: 40
+  daily_kill_03:
+    title: "오늘의 사냥 3"
+    desc: "적 300마리 처치"
+    stat: total_kills
+    target: 300
+    exposed: true
+    rewards:
+      dia: 60
+  daily_upgrade:
+    title: "오늘의 강화"
+    desc: "강화 10회"
+    stat: upgrades_bought
+    target: 10
+    exposed: true
+    rewards:
+      dia: 30
+  daily_boss:
+    title: "오늘의 보스"
+    desc: "보스 2회 처치"
+    stat: boss_kills
+    target: 2
+    exposed: true
+    rewards:
+      dia: 40
+  daily_gold:
+    title: "오늘의 수입"
+    desc: "골드 50,000 획득"
+    stat: gold_earned
+    target: 50000
+    exposed: true
+    rewards:
+      dia: 30
+  daily_summon:
+    title: "오늘의 소환"
+    desc: "장비/유물 소환 1회"
+    stat: summon_pulls
+    target: 1
+    exposed: false
+    rewards:
+      dia: 30

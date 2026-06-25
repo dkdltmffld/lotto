@@ -1,0 +1,10 @@
+# ============================================================
+# enemies — 적 외형 변종 카탈로그
+# 출처: 기존 scripts/enemy.gd VARIANTS. 게임은 변환 산출물 data/enemies.json 을 읽는다.
+# 폴더 assets/sprites/enemies/<id>/ 에 <id>_idle.png · <id>_attack.png 가 둘 다 임포트된
+# 변종만 런타임에서 무작위 선택된다. 새 변종 = 폴더 추가 + 아래 목록에 id 추가.
+# (스탯·타이밍은 불변, 외형만 변경. 정렬/크기 정규화는 enemy.gd 로직.)
+# 원본(여기) 수정 후 변환: godot --headless --path . --script res://tools/build_data.gd
+# ============================================================
+
+variants: [mon_001, mon_002, mon_003]

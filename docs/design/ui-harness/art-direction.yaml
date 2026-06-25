@@ -1,0 +1,50 @@
+version: "1.0"
+game: lotto-idle-rpg
+source_concepts:
+  - lotto_main_hud_scratch_concept_a
+status: draft
+
+visual_identity:
+  summary: "Pixel-art fantasy idle RPG UI where scratch lottery cards read as the attack machine."
+  mood:
+    - compact
+    - readable
+    - reward-heavy
+    - wood-and-gold RPG
+  must_keep:
+    - portrait 360x780 composition
+    - visible side-scrolling combat lane
+    - 3x3 scratch-card interaction as a first-class gameplay surface
+    - native text for all live values and Korean labels
+    - touch-first button sizes
+  avoid:
+    - generic casino slot-machine language
+    - full-screen baked UI screenshots as implementation
+    - tiny text in dense panels
+    - purple/blue gradient dominance
+    - hiding combat behind modal-like frames during idle play
+
+palette:
+  wood_dark: "#2a1b12"
+  wood_mid: "#4a2e19"
+  parchment: "#d9b678"
+  gold: "#e8b83f"
+  green_action: "#3f8c34"
+  red_alert: "#b8472d"
+  foil_silver: "#b9b8ae"
+  cream_text: "#f4e6c2"
+  shadow: "#120b07"
+
+materials:
+  panel_frame: "carved dark wood with gold corner caps"
+  content_card: "warm parchment or dark inset wood"
+  scratch_surface: "silver foil over reward symbols, with rough scratch marks"
+  buttons: "chunky pixel bevel, green for positive action, brown/dark for navigation"
+  icons: "bitmap pixel-style glyphs with dark outline and gold/wood backing"
+
+typography:
+  direction: "bold rounded Korean game UI labels; final implementation uses bundled Godot font."
+  rules:
+    - "Use concept text only as visual placeholder."
+    - "All runtime text must be Label/RichTextLabel, never baked into panel/button skins."
+    - "Use tighter headings inside panels; reserve large type for short reward callouts only."

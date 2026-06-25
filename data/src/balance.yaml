@@ -1,0 +1,59 @@
+# ============================================================
+# balance — 스테이지·블록·보스·골드·적공격·오프라인 (전부 잠정값, 튜닝 전)
+# 출처: 기존 scripts/balance.gd. 게임은 변환 산출물 data/balance.json 을 읽는다.
+# 공식: HP(s)=base*growth^(s-1) (보스면 *boss_mult), gold 동일.
+# 원본(여기) 수정 후 변환: godot --headless --path . --script res://tools/build_data.gd
+# ============================================================
+
+stage:
+  block_size: 10          # 보스 = block_size 배수 스테이지 (10·20·30…)
+  mobs_per_stage: 5       # 일반 스테이지당 잡몹 수 N
+  death_setback: 3        # 사망 시 후퇴 스테이지 수 (블록 첫 스테이지 통째 복귀 X → 소폭 후퇴). 블록 첫이 바닥선.
+
+enemy_hp:
+  base: 40.0
+  growth: 1.18
+  boss_mult: 12.0         # 보스는 같은 스테이지 일반 대비 배수
+
+gold:
+  base: 8.0
+  growth: 1.14
+  boss_mult: 15.0
+  jackpot_mult: 3.0       # 잭팟(9칸 동일) 처치 시 골드 보너스 배수
+
+enemy_attack:
+  # 보스: 자주·세게 / 일반몹: 드물게·약하게(보스의 ~1/6). dmg(s)=base*growth^(s-1)
+  boss:
+    interval: 1.6
+    base: 6.0
+    growth: 1.16
+    windup: 0.4
+  mob:
+    interval: 2.6
+    base: 1.0
+    growth: 1.12
+    windup: 0.35
+
+auto_attack:
+  # 일반 공격(자동) — 교전 중 1/speed 초마다 발동(speed = 초당 횟수, 고정).
+  # 데미지 = 캐릭터 공격력 × coef. (스크래치 스킬 버스트는 별도: 공격력×복권배율×족보배율)
+  coef: 1.0
+  speed: 3.3   # 자동공격 초당 횟수(고정). 옛 attack_speed 강화 max값(0.8+0.1×25)을 기본값화 — 강화 트랙 폐지.
+
+idle:
+  est_seconds_per_mob: 6.0   # 자동 긁기로 잡몹 1마리 처치까지 추정 시간(오프라인 정산)
+
+relic_dust:
+  # 유물 가루 = 유물 가챠 재화. 보스 첫 클리어 보상이 주 획득처(2026-06-17 확정).
+  # ⚠️ 가챠 비용이 고정(100/1000)이라 가루 수입은 완만해야 함(골드식 기하 금지 → 후반 폭주).
+  # 보스 첫 클리어 가루 = per_boss_base + per_boss_step × (블록인덱스-1). 블록인덱스 = stage/block_size(보스10→1).
+  per_boss_base: 50.0   # 첫 보스(스테이지10) 가루. 수치 더미(밸런스 보류).
+  per_boss_step: 10.0   # 블록마다 추가 가루(완만 선형). 0 이면 전 보스 고정.
+
+dungeon:
+  # 던전 "시련의 탑" 데일리 운영(2026-06-18 데일리 던전형 결정). 수치 전부 잠정.
+  # 입장권 = 일일 무료 N개(자정 리셋, use-it-or-lose-it). 광고/IAP 충전은 추후(광고 SDK 미확인).
+  daily_tickets: 10        # 일일 무료 입장권(자정 리셋)
+  # 재도전(이미 깬 층 재입장) 보상 — 입장권으로 게이트되므로 무한 파밍 아님. 첫 돌파(다이아·가루 마일스톤)와 별개.
+  repeat_gold_mult: 1.0    # 재도전 골드 = gold_reward(stage_equiv) × 이 값
+  repeat_dust_ratio: 0.2   # 재도전 가루 = 첫 돌파 가루(dungeon.yaml dust) × 이 비율

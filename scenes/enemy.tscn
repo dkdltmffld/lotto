@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://cenemyscn001"]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_en"]
+[ext_resource type="PackedScene" uid="uid://chpbar001" path="res://scenes/hp_bar.tscn" id="2_hp"]
+
+[node name="Enemy" type="Control"]
+custom_minimum_size = Vector2(50, 78)
+offset_right = 50.0
+offset_bottom = 78.0
+mouse_filter = 2
+script = ExtResource("1_en")
+
+[node name="HPBar" parent="." instance=ExtResource("2_hp")]
+offset_top = 0.0
+offset_right = 50.0
+offset_bottom = 8.0
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(25, 44)
+scale = Vector2(0.35, 0.35)
