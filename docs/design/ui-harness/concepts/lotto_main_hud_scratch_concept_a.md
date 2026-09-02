@@ -2,7 +2,7 @@
 
 ## Intent
 
-`/gen-ui-concept` smoke test for the Godot project UI harness. This concept explores the main gameplay screen for `복권 키우기 : Idle RPG`: compact top HUD, visible side-scrolling combat, scratch-ticket attack panel, and bottom navigation in a 360x780 portrait mobile layout.
+`/gen-ui-concept` smoke test for the Godot project UI harness. This concept explores the main gameplay screen for `복권용사 키우기 : Idle RPG`: compact top HUD, visible side-scrolling combat, scratch-ticket attack panel, and bottom navigation in a 360x780 portrait mobile layout.
 
 ## Art Anchor
 

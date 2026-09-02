@@ -22,7 +22,7 @@ const ALLOWED_CURRENCIES: Array = ["gold", "dia", "dust"]
 const CATALOG: Dictionary = {
 	"mail_20260611_welcome": {
 		"title": "환영합니다!",
-		"body": "복권 키우기에 오신 것을 환영합니다.\n시작 보상을 받아 강화에 사용하세요.",
+		"body": "복권용사 키우기에 오신 것을 환영합니다.\n시작 보상을 받아 강화에 사용하세요.",
 		"rewards": [{"currency": "gold", "amount": 5000.0}],
 		"expires_at": 0,
 		"source": "system",

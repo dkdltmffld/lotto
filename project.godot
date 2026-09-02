@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="복권 키우기 : Idle RPG"
+config/name="복권용사 키우기 : Idle RPG"
 run/main_scene="res://scenes/login.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 boot_splash/bg_color=Color(0.0941, 0.1765, 0.1333, 1)
