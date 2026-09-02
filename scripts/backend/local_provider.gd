@@ -1,17 +1,17 @@
 class_name LocalBackendProvider
 extends BackendProvider
 
-# 비웹(에디터·데스크탑) 폴백. user:// 에 JSON 파일로 저장.
-# 웹에서는 KplayBackendProvider가 대신 쓰인다. 단일 플레이어라 로그인/리더보드는 no-op.
-# 게스트/인증 슬롯은 파일을 분리한다(save.json=인증, save_guest.json=게스트).
+# 웹·에디터·데스크탑 공용 로컬 저장 Provider. user:// 에 JSON 파일로 저장한다.
+# Google은 현재 외부 인증 없는 로컬 프로필이며 Guest와 파일만 분리된다.
+# 기존 Google 진행도 호환을 위해 save.json 파일명은 유지한다.
 
-const AUTH_PATH := "user://save.json"          # 인증 슬롯(기존 파일명 유지)
-var _slot_path: String = AUTH_PATH
+const GOOGLE_PATH := "user://save.json"
+const GUEST_PATH := "user://save_guest.json"
+var _slot_path: String = GOOGLE_PATH
 
 
-func set_slot(slot: String, _cloud_sync: bool) -> void:
-	# 비웹은 클라우드가 없으니 cloud_sync는 무시하고 파일만 분리한다.
-	_slot_path = AUTH_PATH if slot == BackendProvider.SLOT_AUTH else "user://save_%s.json" % slot
+func set_slot(slot: String) -> void:
+	_slot_path = GOOGLE_PATH if slot == BackendProvider.SLOT_GOOGLE else GUEST_PATH
 
 
 func load_all() -> Dictionary:
@@ -41,18 +41,7 @@ func save_all(data: Dictionary) -> bool:
 	return true
 
 
-func login(_provider_hint: String = "") -> void:
-	# 비웹은 실제 인증이 없으므로 개발 편의용 더미 로그인 즉시 성공 처리.
-	# (call_deferred로 emit해 호출 측이 login_changed를 await로 잡을 시간을 준다)
-	login_changed.emit.call_deferred(true, "DevUser")
-
-
-func clear_local() -> void:
-	_delete_file()
-
-
-func clear_account() -> void:
-	# 비웹은 별도 서버가 없으므로 로컬 파일 삭제가 곧 전체 삭제.
+func clear_current() -> void:
 	_delete_file()
 
 

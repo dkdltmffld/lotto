@@ -14,7 +14,6 @@ Godot 웹 export(build/web/index.html)는 file://로 못 열고 HTTP로 서빙�
 참고:
 - 현재 export는 thread_support=false(단일 스레드)라 COOP/COEP가 필수는 아니지만,
   Godot 권장 설정이고 추후 스레드 켤 때를 대비해 켜둔다. 동일 출처 리소스라 무해.
-- kplay SDK는 로컬엔 없으므로 KplayBackendProvider는 preview-mock으로 동작(게스트로 테스트).
 """
 import argparse
 import http.server
@@ -22,7 +21,7 @@ import os
 import socketserver
 import webbrowser
 
-ENTRY = "index.html"  # export_presets.cfg 의 export_path 파일명과 일치 (kplay 진입점도 index.html)
+ENTRY = "index.html"  # export_presets.cfg 의 export_path 파일명과 일치
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):

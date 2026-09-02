@@ -1,6 +1,7 @@
 extends Control
 
-# 로그인 게이트 (메인 씬). 계정 3종 중 택1 → 게임(main.tscn) 진입.
+# 로그인 게이트 (메인 씬). 구글/게스트 로컬 슬롯 중 택1 → 게임(main.tscn) 진입.
+# 두 버튼 모두 외부 인증 없이 즉시 로컬 데이터를 불러온다.
 # 설계: docs/design/로그인 시스템 정리본.md
 
 # 로그인 화면 배경: bg_main.png(`$Background` TextureRect, cover=KEEP_ASPECT_COVERED).
@@ -14,13 +15,9 @@ const SceneNav := preload("res://scripts/scene_nav.gd")  # 씬 전환 공용 헬
 @onready var logo: TextureRect = $Logo
 @onready var status_label: Label = $Bottom/StatusLabel
 @onready var google_button: Button = $Bottom/GoogleButton
-@onready var kplay_button: Button = $Bottom/KplayButton
 @onready var guest_button: Button = $Bottom/GuestButton
 
-const LOGIN_TIMEOUT: float = 20.0
-
-var _entering: bool = false       # 게임 씬 진입 중복 방지
-var _waiting_login: bool = false  # 인증 결과 대기 중
+var _entering: bool = false  # 로컬 슬롯 로드·게임 씬 진입 중복 방지
 
 
 func _ready() -> void:
@@ -32,16 +29,14 @@ func _ready() -> void:
 		logo.texture = title_logo_texture
 	_skin_ui()
 	google_button.pressed.connect(_on_google_pressed)
-	kplay_button.pressed.connect(_on_kplay_pressed)
 	guest_button.pressed.connect(_on_guest_pressed)
-	BackendService.login_changed.connect(_on_login_changed)
 	status_label.text = "계정을 선택하세요"
 
 
 # 배경 일러스트(bg_main)+캐릭터 위에서 또렷하게 읽히도록 하단 UI 스킨.
 # 버튼=어두운 반투명 패널+금색 테두리, 상태 라벨=밝은 크림+그림자.
 func _skin_ui() -> void:
-	for b in [google_button, kplay_button, guest_button]:
+	for b in [google_button, guest_button]:
 		var sb := StyleBoxFlat.new()
 		sb.bg_color = Color(0.11, 0.09, 0.07, 0.88)
 		sb.set_border_width_all(2)
@@ -71,58 +66,26 @@ func _skin_ui() -> void:
 
 
 func _on_google_pressed() -> void:
-	_start_login(BackendService.ACCOUNT_GOOGLE)
-
-
-func _on_kplay_pressed() -> void:
-	_start_login(BackendService.ACCOUNT_KPLAY)
+	_select_local_account(BackendService.ACCOUNT_GOOGLE)
 
 
 func _on_guest_pressed() -> void:
-	# 게스트: 게스트 슬롯 데이터를 로드한 뒤 진입 (로컬 저장, 랭킹 등록 제한)
-	await BackendService.continue_as_guest()
-	_enter_game()
+	_select_local_account(BackendService.ACCOUNT_GUEST)
 
 
-func _start_login(provider: String) -> void:
-	if _entering or _waiting_login:
-		return
-	_set_buttons_enabled(false)
-	status_label.text = "로그인 중..."
-	if BackendService.is_logged_in:
-		# 이미 플랫폼 인증됨(예: kplay 자동 로그인) → 재인증 없이 인증 슬롯 로드 + 계정 표기 갱신 후 진입.
-		# (이게 없으면 게스트→구글 등 계정 변경 시 표기·데이터가 이전(게스트) 그대로 유지됨)
-		await BackendService.commit_auth_session(provider)
-		_enter_game()
-		return
-	_waiting_login = true
-	BackendService.begin_login(provider)
-	_login_timeout()
-
-
-func _login_timeout() -> void:
-	await get_tree().create_timer(LOGIN_TIMEOUT).timeout
-	# 로그인 성공 → 게임 씬 전환으로 login 노드가 free된 뒤 타이머가 재개될 수 있다(SceneTreeTimer는 트리 소유).
-	# freed 인스턴스 멤버 접근 = 콘솔 에러 → 트리 밖이면 조기 return.
-	if not is_inside_tree():
-		return
-	if _waiting_login and not _entering:
-		_waiting_login = false
-		_set_buttons_enabled(true)
-		status_label.text = "로그인에 실패했어요. 다시 시도해주세요."
-
-
-func _on_login_changed(logged_in: bool) -> void:
-	if logged_in and _waiting_login:
-		_waiting_login = false
-		_enter_game()
-
-
-func _enter_game() -> void:
+func _select_local_account(account: String) -> void:
+	# 구글/게스트 모두 로컬 전용이다. 슬롯만 분리해 서로의 진행도를 보호한다.
 	if _entering:
 		return
 	_entering = true
-	_goto_scene("res://scenes/main.tscn")
+	_set_buttons_enabled(false)
+	status_label.text = "데이터를 불러오는 중..."
+	if account == BackendService.ACCOUNT_GOOGLE:
+		await BackendService.continue_as_google()
+	else:
+		await BackendService.continue_as_guest()
+	if is_inside_tree():
+		_goto_scene("res://scenes/main.tscn")
 
 
 func _goto_scene(path: String) -> void:
@@ -131,5 +94,5 @@ func _goto_scene(path: String) -> void:
 
 
 func _set_buttons_enabled(on: bool) -> void:
-	for b in [google_button, kplay_button, guest_button]:
+	for b in [google_button, guest_button]:
 		b.disabled = not on

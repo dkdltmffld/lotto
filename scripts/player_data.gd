@@ -31,13 +31,13 @@ const ANIMATIONS: Dictionary = {
 		"loop": true,
 	},
 	"run": {
-		"path": "res://assets/sprites/player/PC_run.png",
+		"path": "res://assets/sprites/player/PC_run_v2.png",
 		"speed": 18.0,  # = 12 × 1.5 — RUN_SPEED를 ×1.5 했으므로 다리 사이클도 맞춰 빠르게(발 미끄러짐 완화). 시각 케이던스라 호흡과 무관.
 		"loop": true,
 	},
 	"attack": {
-		# 포즈 파일 — PC_attack_01_0.png(시작/와인드업) · _1.png(종료/타격). 이후 _2/_3 확장 가능.
-		"pose_base": "res://assets/sprites/player/PC_attack_01",
+		# idle 기준으로 재제작한 빈손 포즈 — _0(와인드업) · _1(타격). 무기는 PlayerController가 별도 렌더.
+		"pose_base": "res://assets/sprites/player/PC_attack_02",
 		"speed": 24.0,  # 빠른 스윙(전진에 모션 안 끊기게). 너무 빠르면 이 값만 낮추면 됨.
 		"loop": false,
 	},

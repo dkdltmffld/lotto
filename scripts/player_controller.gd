@@ -36,24 +36,26 @@ var _hp_bar: ProgressBar = null
 var _is_dead: bool = false
 var _anim_render: Dictionary = {}  # anim -> {scale, offset_y} (크기 정규화 + 발끝 정렬)
 
-# --- 무기 부착 (2026-06-24, 무기 분리 step 2 — 몽둥이부터) ---
+# --- 무기 부착 (2026-06-24, 2026-09-02 임시 비활성화) ---
 # 장착 무기를 PC 손에 표시. Weapon = 형제 Sprite2D(몸 자식 X — per-anim scale 정규화가 무기까지 왜곡).
 # 몸보다 뒤(z-1)에 깔아 몸의 주먹이 손잡이를 덮음 = "손이 무기 위"(사용자 결정 2026-06-24).
 # 단일 이미지(몽둥이)를 키프레임 2개(와인드업/타격)로 스냅 전환 — PC 포즈투포즈와 동일(트윈 X, 몸 프레임 전환과 동기). 검(_0/_1 포즈)은 이후 텍스처 스왑으로 확장.
-# ⚠️ 현재 idle/run/attacked/dead 시트엔 검이 baked-in → 겹침 방지 위해 공격 모션 중에만 표시. 나머지 빈손화 후 상시 표시.
+# idle/attacked/dead 시트엔 검이 baked-in이고, 새 run/attack은 빈손이다.
+# 분리 무기는 빈손 모션인 run/attack에서만 표시해 기존 검과 겹치지 않게 한다.
 # 아래 값은 전부 튜닝 노브(라이브로 맞춤).
+const SEPARATE_WEAPON_ENABLED: bool = false       # false: 캐릭터 에셋에 포함된 기본 무기만 표시
 const WEAPON_TEXTURE: Texture2D = preload("res://assets/sprites/weapon/w_0001.png")  # TODO: Events.equipment_changed 로 교체
 const WEAPON_SCALE: float = 0.30                  # 화면상 무기 크기
 const WEAPON_GRIP: Vector2 = Vector2(128, 235)    # 텍스처 내 손잡이(회전 중심) 픽셀 — 몽둥이 하단
 const WEAPON_Z_BEHIND: int = -1                   # 공격 시 무기 z(음수=뒤) → 몸 주먹이 손잡이 덮음("손이 무기 위")
 const WEAPON_Z_RUN: int = 1                       # run 시 무기 z(양수=앞) → 가까운(오른)손이 쥔 것처럼 보이게(몸 앞)
 # 손 앵커 = player.position(발끝) 기준 화면 오프셋. 무기 회전각 = 라디안(+ 시계방향, 0=위로). 2개 키프레임을 스냅 전환.
-const WEAPON_WINDUP_OFFSET: Vector2 = Vector2(10, -15)   # 들어올린 주먹(머리 옆) — 48px 빈손 포즈서 역산
+const WEAPON_WINDUP_OFFSET: Vector2 = Vector2(10, -10)   # PC_attack_02 앞손 그립(와인드업)
 const WEAPON_WINDUP_ROT: float = -0.35
-const WEAPON_STRIKE_OFFSET: Vector2 = Vector2(4, 16)     # 허리 앞 주먹 — 48px 빈손 포즈서 역산
+const WEAPON_STRIKE_OFFSET: Vector2 = Vector2(24, -7)    # PC_attack_02 전방 그립(타격 포즈)
 const WEAPON_STRIKE_ROT: float = 1.35
 # run(달리기) — 오른손에 들고 뒤로 늘어뜨림. 고정 트레일링 앵커(run 사이클 동안 유지).
-const WEAPON_RUN_OFFSET: Vector2 = Vector2(-18, -11)     # 뒤로 젖힌 손(어깨·뒤·위) — run 스프라이트가 한 팔을 뒤로 빼므로 거기에 그립. 48px (13,15)서 역산
+const WEAPON_RUN_OFFSET: Vector2 = Vector2(-18, -11)     # PC_run_v2의 뒤로 젖힌 손 그립
 const WEAPON_RUN_ROT: float = 4.85                       # 뒤로 거의 수평(팔과 평행, ~8° 위로 들림). 0=위/+시계방향. 4.71=정수평, 키우면 위로
 # run 중 무기에 생기 부여 — 스프라이트 자체는 몸통 상하 움직임이 거의 없어(다리만 움직임) 절차적으로 흔든다. run 애니 프레임에 위상 동기.
 const RUN_BOB_AMP: float = 2.5                           # 상하 바운스 진폭(px)
@@ -197,7 +199,7 @@ func _build_animations() -> void:
 
 func _add_sheet_frames(sf: SpriteFrames, anim_name: String, path: String) -> void:
 	# 가로 시트: 정사각 프레임(한 변 = 텍스처 높이) → width/height 개로 슬라이스.
-	# 시트마다 프레임 크기가 달라도 됨(48px·256px 혼재 지원) — FRAME_SIZE 고정 제거, 높이로 자동 감지.
+	# 시트마다 프레임 크기가 달라도 됨 — FRAME_SIZE 고정 없이 높이로 자동 감지.
 	var tex: Texture2D = load(path)
 	if tex == null:
 		push_warning("PlayerController: 시트 누락 " + path)
@@ -356,6 +358,8 @@ func _create_hp_bar() -> void:
 
 
 func _create_weapon() -> void:
+	if not SEPARATE_WEAPON_ENABLED:
+		return
 	# 장착 무기 = 형제 Sprite2D(몸 자식 X). 손잡이(WEAPON_GRIP)를 원점에 맞춰 회전 중심으로.
 	_weapon = Sprite2D.new()
 	_weapon.texture = WEAPON_TEXTURE
@@ -369,10 +373,10 @@ func _create_weapon() -> void:
 
 
 func _update_weapon() -> void:
-	# 무기는 공격 모션 중에만 표시(현재 과도기). 위치=발끝+손앵커, 회전=스윙 트윈값.
+	# 분리 무기 기능이 켜진 경우에만 공격/run 중 표시. 위치=발끝+손앵커, 회전=스윙값.
 	if _weapon == null:
 		return
-	var show_weapon: bool = _has_weapon and not _is_dead and (_is_attacking() or animation == "run")
+	var show_weapon: bool = SEPARATE_WEAPON_ENABLED and _has_weapon and not _is_dead and (_is_attacking() or animation == "run")
 	_weapon.visible = show_weapon
 	if not show_weapon:
 		return

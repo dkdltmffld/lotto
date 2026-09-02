@@ -112,11 +112,7 @@ func _make_volume_row(parent: VBoxContainer, label_text: String, cb: Callable) -
 func refresh() -> void:
 	# 패널 열 때 game.gd가 호출: 계정 표시 + 사운드 컨트롤을 현재 Audio 상태로 동기화.
 	if _account_label != null:
-		if BackendService.is_guest():
-			_account_label.text = "게스트"
-		else:
-			var nm: String = BackendService.user_name
-			_account_label.text = "%s (%s)" % [nm if nm != "" else "?", BackendService.account_type]
+		_account_label.text = "구글" if BackendService.account_type == BackendService.ACCOUNT_GOOGLE else "게스트"
 	# 사운드 컨트롤 동기화 (set_block_signals로 동기화 중 콜백 재진입 방지)
 	if _mute_check != null:
 		_mute_check.set_block_signals(true)

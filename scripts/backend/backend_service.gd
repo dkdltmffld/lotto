@@ -1,18 +1,14 @@
 extends Node
 
-# 백엔드 파사드 (autoload "BackendService"). 게임 코드는 이 싱글톤만 호출한다.
-# 실제 영속화/리더보드/로그인은 BackendProvider 구현이 담당:
-#   - 웹: KplayBackendProvider (kplay.games postMessage)
-#   - 비웹(에디터·데스크탑): LocalBackendProvider (user:// 파일)
-# 저장 데이터는 메모리에 _data(Dictionary)로 유지하고 JSON 한 덩어리로 영속화 (kplay 한도 10KB).
+# 로컬 저장 파사드 (autoload "BackendService"). 게임 코드는 이 싱글톤만 호출한다.
+# Google/게스트는 서로 다른 user:// JSON 슬롯을 사용하며, 둘 다 외부 인증·네트워크 없이 로컬로 동작한다.
+# 저장 데이터는 메모리에 _data(Dictionary)로 유지하고 JSON 한 덩어리로 영속화한다.
 #
 # ⚠️ class_name 없음 — autoload 이름과 충돌 방지. 전역 식별자 BackendService 로 접근.
 
 signal save_ready                                     # 최초 로드 완료
-signal login_changed(logged_in: bool)                 # 인증 로그인 상태 변화
 signal logged_out                                     # 로그아웃 완료 → 로그인 화면 복귀 신호
-signal account_deleted                                # 계정 탈퇴(로컬+서버 삭제) 완료 → 로그인 화면 복귀
-signal score_submitted(success: bool, rank: int)      # 랭킹 점수 제출 결과
+signal account_deleted                                # 현재 로컬 슬롯 삭제 완료 → 로그인 화면 복귀
 
 const SAVE_VERSION := 1
 const GachaScript = preload("res://scripts/gacha.gd")  # 장착 보너스·강화비용·합성·등급 계산용
@@ -22,13 +18,10 @@ const DungeonDataScript = preload("res://scripts/dungeon_data.gd")  # 던전 층
 # 계정 종류 (로그인 시스템 정리본 §2)
 const ACCOUNT_NONE := ""
 const ACCOUNT_GOOGLE := "google"
-const ACCOUNT_KPLAY := "kplay"
 const ACCOUNT_GUEST := "guest"
 
 var is_ready: bool = false
 var is_fresh_save: bool = false       # 현재 슬롯 첫 시작(저장 데이터 없음). 튜토리얼 등장 조건
-var is_logged_in: bool = false        # 인증 계정(google/kplay)만 true. 게스트는 false
-var user_name: String = ""
 var account_type: String = ACCOUNT_NONE
 
 var _provider: BackendProvider
@@ -44,25 +37,9 @@ var _autosave_accum: float = 0.0
 func _ready() -> void:
 	# 로드 완료 전에도 스키마가 유효하도록 먼저 기본값으로 초기화
 	_data = _migrate({})
-	if OS.has_feature("web"):
-		_provider = KplayBackendProvider.new()
-	else:
-		_provider = LocalBackendProvider.new()
-	_provider.login_changed.connect(_on_provider_login_changed)
-	_provider.score_submitted.connect(_on_provider_score_submitted)
-	_provider.resync_needed.connect(_on_provider_resync_needed)
+	_provider = LocalBackendProvider.new()
 	_setup_web_lifecycle_flush()
 	await _load()
-
-
-func _on_provider_resync_needed() -> void:
-	# (웹) 로그인 타임아웃 뒤 늦게 클라우드가 localStorage에 반영됨 → 현재 슬롯을 다시 읽어 stale _data 교체.
-	# (이게 없으면 다음 저장이 stale _data 로 방금 받은 클라우드 데이터를 덮어써 진행도 롤백)
-	# save_ready 는 재발화하지 않는다(최초 로드용) — _data 만 최신으로 스왑.
-	var loaded: Dictionary = await _provider.load_all()
-	if not loaded.is_empty():
-		_data = _migrate(loaded)
-		_dirty = false
 
 
 func _setup_web_lifecycle_flush() -> void:
@@ -439,7 +416,7 @@ func _combine_one(pool: String, grade: String) -> Dictionary:
 
 func combine_all_equips(pool: String) -> Dictionary:
 	# 합성 가능한 모든 장비를 한 번에 — 저등급→고등급 cascade(common 합성으로 생긴 rare도 이어서 합성).
-	# 반복 합성 후 1회만 flush(kplay 과호출 방지). 반환 {combines, produced{등급:개수}}.
+	# 반복 합성 후 1회만 flush(불필요한 디스크 쓰기 방지). 반환 {combines, produced{등급:개수}}.
 	var summary := {"combines": 0, "produced": {}}
 	for g in GachaScript.grade_ids():
 		if GachaScript.next_grade(g) == "":
@@ -859,64 +836,36 @@ func set_value(key: String, value: Variant) -> void:
 	_mark_dirty()
 
 
-# ---------- 계정 / 랭킹 ----------
+# ---------- 로컬 프로필 ----------
 
 func is_guest() -> bool:
 	return account_type == ACCOUNT_GUEST
 
 
-func _is_auth_provider(p: String) -> bool:
-	return p == ACCOUNT_GOOGLE or p == ACCOUNT_KPLAY
-
-
-func begin_login(provider: String) -> void:
-	# 인증 계정 로그인 시작 (google/kplay). 완료는 login_changed(true) 시그널로 통지.
-	# google/kplay는 방식만 다르고 동작 동일 — account_type만 다르게 보관.
-	if not _is_auth_provider(provider):
-		push_warning("[Backend] 알 수 없는 로그인 provider: %s" % provider)
-		return
-	account_type = provider
-	_provider.login(provider)
-
-
-func commit_auth_session(provider: String) -> void:
-	# 이미 플랫폼 인증된 상태(is_logged_in)에서 인증 계정으로 진입/변경할 때.
-	# 재인증 없이 ①계정 표기 갱신 + ②인증 슬롯(클라우드)으로 전환 + ③그 데이터 로드.
-	# (게스트 슬롯에서 넘어올 때 데이터가 섞이지 않게 인증 슬롯을 다시 읽는다.)
-	# kplay는 게임 로드 시 user-info를 자동 전송해 is_logged_in이 먼저 true가 될 수 있어,
-	# login의 begin_login 단축 경로에서 account_type/슬롯이 안 바뀌던 문제도 함께 보정.
-	if not _is_auth_provider(provider):
-		return
-	account_type = provider
-	await _switch_to_auth_slot()
-
-
-func _switch_to_auth_slot() -> void:
-	# 인증 슬롯(클라우드 동기)으로 전환 후 그 데이터를 로드한다.
-	_provider.set_slot(BackendProvider.SLOT_AUTH, true)
+func continue_as_google() -> void:
+	# 현재는 외부 인증 없이 Google용 로컬 슬롯으로 진입한다.
+	account_type = ACCOUNT_GOOGLE
+	_provider.set_slot(BackendProvider.SLOT_GOOGLE)
 	await _load()
 
 
 func continue_as_guest() -> void:
-	# 게스트 진입 — 게스트 슬롯(로컬 전용)으로 전환 후 그 데이터를 로드(인증 데이터와 분리).
+	# 게스트용 로컬 슬롯으로 진입한다.
 	account_type = ACCOUNT_GUEST
-	is_logged_in = false
-	_provider.set_slot(BackendProvider.SLOT_GUEST, false)
+	_provider.set_slot(BackendProvider.SLOT_GUEST)
 	await _load()
 
 
 func logout() -> void:
-	# 로그아웃 = 로컬(이 기기) 세션/캐시만 정리 후 로그인 화면 복귀.
-	# 인증 계정의 클라우드 사본은 유지되어 재로그인 시 복원된다.
-	_provider.clear_local()
+	# 로그아웃은 세션만 끝낸다. 현재 슬롯 데이터는 저장해 다음 진입 시 이어한다.
+	flush()
 	_reset_session()
 	logged_out.emit()
 
 
 func delete_account() -> void:
-	# 계정 탈퇴 = 로컬 + 서버 데이터 모두 삭제. 구글/kplay/게스트 공통.
-	# 재로그인하면 저장된 데이터가 없어 신규 계정처럼 시작된다.
-	_provider.clear_account()
+	# 현재 선택한 로컬 슬롯만 삭제한다.
+	_provider.clear_current()
 	_reset_session()
 	account_deleted.emit()
 
@@ -924,21 +873,7 @@ func delete_account() -> void:
 func _reset_session() -> void:
 	_data = _migrate({})
 	_dirty = false
-	is_logged_in = false
-	user_name = ""
 	account_type = ACCOUNT_NONE
-
-
-func submit_score(score: int) -> void:
-	# 랭킹 현재 비활성(게임 컨셉 정리본 §11). 게스트도 no-op.
-	if is_guest():
-		return
-	_provider.submit_score(score)
-
-
-func show_ranking() -> void:
-	# 랭킹 표시 (구 show_leaderboard). 보기는 게스트도 허용.
-	_provider.show_leaderboard()
 
 
 # ---------- 영속화 ----------
@@ -967,21 +902,6 @@ func _persist_now() -> void:
 	_data["last_seen"] = int(Time.get_unix_time_from_system())
 	var ok: bool = _provider.save_all(_data)
 	_dirty = not ok
-
-
-func _on_provider_login_changed(logged_in: bool, provider_user_name: String) -> void:
-	is_logged_in = logged_in
-	user_name = provider_user_name
-	# 인증 의도일 때만(begin_login으로 account_type이 이미 auth) 인증 슬롯으로 전환·로드한다.
-	# ⚠️ kplay는 게스트로 시작해도 user-info를 자동 전송하므로, 게스트/미선택 상태의 자동 로그인은
-	#    슬롯을 바꾸지 않는다(게스트 데이터 보호). 데이터 준비 후 통지(씬 전환 전 보장).
-	if logged_in and _is_auth_provider(account_type):
-		await _switch_to_auth_slot()
-	login_changed.emit(logged_in)
-
-
-func _on_provider_score_submitted(success: bool, rank: int) -> void:
-	score_submitted.emit(success, rank)
 
 
 func _notification(what: int) -> void:

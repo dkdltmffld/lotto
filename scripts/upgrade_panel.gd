@@ -186,7 +186,7 @@ func _on_buy_down(id: String) -> void:
 
 func _on_buy_up() -> void:
 	_held_id = ""
-	# 구매 묶음이 끝나는 시점에 1회만 영속화 (연타마다 flush하면 클라우드 폭주 → 금지)
+	# 구매 묶음이 끝나는 시점에 1회만 영속화(연타마다 디스크에 쓰지 않음).
 	BackendService.flush()
 
 

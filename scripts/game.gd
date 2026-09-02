@@ -173,7 +173,7 @@ const BOSS_ONESHOT_TEST: bool = false
 const START_STAGE_TEST: int = 0
 # 개발용 치트(좌상단 "치트" 버튼+패널 — cheat_controller.gd). 배포 시 false로.
 # + OS.is_debug_build() 이중 게이트: release export(배포 빌드)에선 true여도 자동 비활성.
-#   (deploy_kplay.ps1 의 업로드 하드 차단과 이중 안전. 로컬 웹 테스트는 build_web.ps1 이 debug export라 치트 유지.)
+#   (로컬 웹 테스트는 build_web.ps1의 debug export에서만 치트 유지.)
 const CHEAT_ENABLED: bool = true
 # 개발용: true면 시작 시 상점 패널 자동 오픈(MCP 스크린샷 검증용 — 클릭 불가 보완). 검증 후 false.
 const SHOP_DEBUG_OPEN: bool = false
@@ -1963,7 +1963,6 @@ func _on_main_menu_pressed() -> void:
 
 
 func _on_logout_pressed() -> void:
-	BackendService.flush()
 	BackendService.logout()  # → logged_out → _return_to_login
 
 
@@ -2138,14 +2137,7 @@ func _has_unequipped_relic() -> bool:
 
 
 func _refresh_account_label() -> void:
-	# 상단 계정 표시: 게스트면 "게스트", 인증이면 "이름 (google/kplay)".
-	var who: String
-	if BackendService.is_guest():
-		who = "게스트"
-	else:
-		var nm: String = BackendService.user_name
-		who = "%s (%s)" % [nm if nm != "" else "?", BackendService.account_type]
-	account_label.text = who
+	account_label.text = "구글" if BackendService.account_type == BackendService.ACCOUNT_GOOGLE else "게스트"
 
 
 func _fmt(n: float) -> String:

@@ -20,7 +20,7 @@
 - **Aspect**: `keep` (2026-05-29 확정) — 디자인 360×780 전체를 비율 유지하며 화면에 맞춰 확대/축소, 안 맞는 부분은 **레터박스(여백)**. 게임 전체가 항상 정상 비율로 보임.
 - **Texture Filter**: 전역 `nearest` (픽셀 아트 룩)
 
-> 변천: keep→expand→keep_height→cover(SubViewport)→**keep**. expand/keep_height는 비율 바뀔 때 보이는 영역이 달라져 배치가 틀어졌고, cover는 **kplay 프리뷰가 가로(16:9) 프레임**이라 세로 게임이 과확대돼 깨졌다. 세로 게임을 임의 비율(특히 가로)에서 올바르게 보이려면 `keep`이 정답(여백은 감수). ※ kplay 게임 orientation을 세로로 설정 가능한지 확인 필요(그래야 여백 최소).
+> 변천: keep→expand→keep_height→cover(SubViewport)→**keep**. expand/keep_height는 비율이 바뀌 때 보이는 영역이 달라져 배치가 틀어졌고, cover는 가로(16:9) 웹 프레임에서 세로 게임이 과확대돼 깨졌다. 임의 비율에서 전체 화면을 보장하기 위해 `keep`을 사용한다.
 
 ### 2-3. 적응 동작 (keep)
 
@@ -82,7 +82,7 @@
 상단 HUD는 **가로 시트 바(#23) 배경 위에 한 줄로 정렬**(2026-06-08 레퍼런스식 재구성, `game.gd._build_top_bar`). 가로 순서: [가장 왼쪽 ~46px 비움=프로필 예약] → 닉네임 → 골드/다이아 칩(가로 나란히) → 우편함 버튼(`icon_mail` + RedDot) → 설정 버튼(`icon_settings`, 둘 다 오른쪽 끝).
 
 - **배경 바 (#23 시트, 9-slice 가로 가득)**: `UISkin.top_bar()`(`R_TOPBAR`)를 `y6~52` 범위에 깔고 맨 뒤로. ⚠️ 임시 placeholder(추후 UI 에셋 교체).
-- **닉네임 (`AccountLabel`, 좌측, offset_left 46)**: 로그인 계정 표시. 인증이면 `"이름 (google/kplay)"`, 게스트면 `"게스트"`. font_size 12, 크림색(`Color(0.96,0.93,0.82)`)+그림자. `game.gd._refresh_account_label()`. (구 우측 배치 → 2026-06-08 좌측 이동)
+- **프로필 (`AccountLabel`, 좌측, offset_left 46)**: `"구글"` 또는 `"게스트"` 표시. font_size 12, 크림색(`Color(0.96,0.93,0.82)`)+그림자. `game.gd._refresh_account_label()`.
 - **골드/다이아 (가로 나란히 칩)**: 각 재화는 검은 반투명 둥근 칩(`_make_chip`, `Color(0,0,0,0.55)`) 위에 **아이콘(`assets/ui/icon/icon_gold`·`icon_dia`, `_make_currency_icon`, Linear 필터) + 숫자**로 표기(2026-06-09 — 구 "골드/다이아" 텍스트 prefix 제거, 아이콘이 칩 좌측). 통화는 단일 골드가 아니라 **다중(골드/다이아)**.
   - 골드(`ScoreLabel`/`gold_label`): 숫자 N(§5-4 포맷, 좌측 금화 아이콘), font_size 11, **노란 `GOLD_COLOR`**. `_refresh_hud()`가 `BackendService.get_gold()`로 갱신. 골드 뒤 검은 백판(`ScoreBackground` ColorRect)은 제거됨(칩+그림자로 가독성). ⚠️ `main.tscn`에는 `ScoreBackground`/`ScoreLabel` 노드가 잔존하나 `game.gd._ready`가 `ScoreBackground`를 런타임 `queue_free()`로 정리. *(점수/타이머는 방치형 피벗(2026-06-01)으로 폐기 — 메인 재화는 골드)*
   - 다이아(`_dia_label`): 숫자 N(§5-4 포맷, 좌측 다이아 아이콘), font_size 11, **하늘색 `DIA_COLOR`**(`Color(0.45,0.8,1.0)`). `_refresh_hud()`가 `BackendService.get_dia()`로 갱신. 획득처 = 치트 패널 + 현재 **퀘스트 보상**(메인·일일, `quests.gd` 카탈로그 대부분이 다이아 지급)·**우편함**(`mailbox.gd` 일부 우편)도 지급하나, 이는 **임시 더미 지급**이며 **정식 획득 곡선·밸런스는 미설계**(TBD). 소비처 = **상점 > 소환 > 장비**(장비 가챠, `ShopPanel`). 상점 패널 안에는 다이아를 중복 표기하지 않음(상단 HUD 상시 노출).
@@ -250,7 +250,6 @@ PC 공격은 두 레이어로 나뉜다(전투 2레이어, [[전투 시스템 �
 
 게임오버가 없으므로(실패 조건 없음) 게임오버 패널도 없다. 계정 관련 동작은 **설정 메뉴**(§10-2)에서 접근한다.
 
-- **랭킹 보기** → `BackendService.show_ranking()` *(랭킹은 현재 비활성, 추후 제거 검토)*
 - **로그아웃** → `BackendService.logout()` (로컬만, 클라우드 유지) → 로그인 화면 복귀
 - **메인 메뉴** → `login.tscn`(메인 메뉴 역할 겸용)로 복귀
 - **계정 탈퇴**(`BackendService.delete_account()`, 로컬+서버 삭제): 배치 위치 미정(TBD).

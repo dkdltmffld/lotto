@@ -100,11 +100,6 @@ custom_minimum_size = Vector2(240, 56)
 layout_mode = 2
 text = "구글로 시작"
 
-[node name="KplayButton" type="Button" parent="Bottom" unique_id=1400285582]
-custom_minimum_size = Vector2(240, 56)
-layout_mode = 2
-text = "kplay로 시작"
-
 [node name="GuestButton" type="Button" parent="Bottom" unique_id=301016126]
 custom_minimum_size = Vector2(240, 56)
 layout_mode = 2

@@ -57,7 +57,7 @@ static func can_afford(id: String) -> bool:
 
 
 # 구매 시도. 성공 시 골드 차감 + 레벨+1(메모리·dirty). 성공 여부 반환.
-# flush는 호출 측이 구매 묶음 끝에 1회 한다 (롱프레스 연타 시 매번 flush하면 클라우드 폭주 → 금지).
+# flush는 호출 측이 구매 묶음 끝에 1회만 한다(롱프레스 연타 중 디스크 쓰기 반복 방지).
 static func buy(id: String) -> bool:
 	var tracks: Dictionary = GameData.subtable("upgrades", "tracks", {})
 	if not tracks.has(id) or is_maxed(id):

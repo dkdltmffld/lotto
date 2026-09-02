@@ -16,7 +16,7 @@ const TESTS: Dictionary = {
 	"gacha": preload("res://tools/tests/test_gacha.gd"),
 	"relics": preload("res://tools/tests/test_relics.gd"),
 	"balance": preload("res://tools/tests/test_balance.gd"),
-	"save_codec": preload("res://tools/tests/test_save_codec.gd"),
+	"local_provider": preload("res://tools/tests/test_local_provider.gd"),
 	"mailbox": preload("res://tools/tests/test_mailbox.gd"),
 	"quests": preload("res://tools/tests/test_quests.gd"),
 	"dungeon": preload("res://tools/tests/test_dungeon.gd"),
